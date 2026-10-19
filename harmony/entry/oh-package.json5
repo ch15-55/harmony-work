@@ -5,6 +5,8 @@
   "main": "",
   "author": "",
   "license": "",
-  "dependencies": {},
+  "dependencies": {
+    "@ohos/hypium": "1.0.29"
+  },
   "devDependencies": {}
 }
