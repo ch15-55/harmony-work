@@ -1,0 +1,28 @@
+{
+  "src": [
+    "pages/PrivacyPage",
+    "pages/Index",
+    "pages/HomePage",
+    "pages/RecordsPage",
+    "pages/PlaceholderPage",
+    "pages/StatisticsPage",
+    "pages/MinePage",
+    "pages/RecordEditPage",
+    "pages/TransactionDetailPage",
+    "pages/CategoryTxListPage",
+    "pages/AccountManagePage",
+    "pages/AccountEditPage",
+    "pages/LedgerManagePage",
+    "pages/CategoryManagePage",
+    "pages/BudgetSettingPage",
+    "pages/ExportPage",
+    "pages/BackupPage",
+    "pages/DiagnosticsPage",
+    "pages/ThemeSettingPage",
+    "pages/AppLockSettingPage",
+    "pages/PinVerifyPage",
+    "pages/AboutPage",
+    "pages/PrivacyPolicyPage",
+    "pages/UserAgreementPage"
+  ]
+}

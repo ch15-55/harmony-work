@@ -1,0 +1,11 @@
+{
+  "name": "lifeledger",
+  "version": "1.0.0",
+  "description": "轻账本 LifeLedger - 纯本地记账，零网络、零第三方依赖",
+  "author": "",
+  "license": "",
+  "modelVersion": "6.0.0",
+  "dependencies": {},
+  "devDependencies": {},
+  "dynamicDependencies": {}
+}

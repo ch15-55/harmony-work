@@ -1,0 +1,256 @@
+{
+  "string": [
+    {
+      "name": "app_slogan",
+      "value": "A fully offline ledger: no network, no permissions, no ads."
+    },
+    {
+      "name": "module_desc",
+      "value": "Fully local bookkeeping. No network, no data collection."
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "LifeLedger"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "LifeLedger"
+    },
+    {
+      "name": "tab_home",
+      "value": "Home"
+    },
+    {
+      "name": "tab_records",
+      "value": "Records"
+    },
+    {
+      "name": "tab_add",
+      "value": "Add"
+    },
+    {
+      "name": "tab_statistics",
+      "value": "Stats"
+    },
+    {
+      "name": "tab_mine",
+      "value": "Mine"
+    },
+    {
+      "name": "page_home_title",
+      "value": "Home"
+    },
+    {
+      "name": "page_records_title",
+      "value": "Records"
+    },
+    {
+      "name": "page_statistics_title",
+      "value": "Stats"
+    },
+    {
+      "name": "page_mine_title",
+      "value": "Mine"
+    },
+    {
+      "name": "page_privacy_policy_title",
+      "value": "Privacy Policy"
+    },
+    {
+      "name": "page_user_agreement_title",
+      "value": "User Agreement"
+    },
+    {
+      "name": "page_diagnostics_title",
+      "value": "Diagnostics"
+    },
+    {
+      "name": "privacy_dialog_title",
+      "value": "Welcome to LifeLedger"
+    },
+    {
+      "name": "privacy_dialog_subtitle",
+      "value": "Please learn how your data is handled before you start"
+    },
+    {
+      "name": "privacy_summary_title",
+      "value": "Privacy Summary"
+    },
+    {
+      "name": "privacy_point_collect",
+      "value": "We collect no personal information"
+    },
+    {
+      "name": "privacy_point_storage",
+      "value": "Data stays in the on-device sandbox and is removed on uninstall"
+    },
+    {
+      "name": "privacy_point_network",
+      "value": "No network requests are made; fully usable offline"
+    },
+    {
+      "name": "privacy_point_sdk",
+      "value": "No third-party SDK, no ads, no analytics, no push"
+    },
+    {
+      "name": "privacy_links_tip",
+      "value": "Please read and agree to"
+    },
+    {
+      "name": "privacy_policy_name",
+      "value": "the Privacy Policy"
+    },
+    {
+      "name": "privacy_agreement_name",
+      "value": "the User Agreement"
+    },
+    {
+      "name": "privacy_and",
+      "value": "and"
+    },
+    {
+      "name": "privacy_btn_agree",
+      "value": "Agree and Continue"
+    },
+    {
+      "name": "privacy_btn_disagree",
+      "value": "Disagree and Exit"
+    },
+    {
+      "name": "common_confirm",
+      "value": "OK"
+    },
+    {
+      "name": "common_cancel",
+      "value": "Cancel"
+    },
+    {
+      "name": "common_delete",
+      "value": "Delete"
+    },
+    {
+      "name": "common_edit",
+      "value": "Edit"
+    },
+    {
+      "name": "common_save",
+      "value": "Save"
+    },
+    {
+      "name": "common_retry",
+      "value": "Retry"
+    },
+    {
+      "name": "common_back",
+      "value": "Back"
+    },
+    {
+      "name": "common_loading",
+      "value": "Loading"
+    },
+    {
+      "name": "common_empty_title",
+      "value": "No data yet"
+    },
+    {
+      "name": "common_error_title",
+      "value": "Load failed"
+    },
+    {
+      "name": "common_error_desc",
+      "value": "Please try again later"
+    },
+    {
+      "name": "ledger_switch_title",
+      "value": "Switch Ledger"
+    },
+    {
+      "name": "ledger_create_action",
+      "value": "New Ledger"
+    },
+    {
+      "name": "ledger_manage_action",
+      "value": "Manage Ledgers"
+    },
+    {
+      "name": "page_ledger_manage_title",
+      "value": "Ledger Management"
+    },
+    {
+      "name": "ledger_create_title",
+      "value": "New Ledger"
+    },
+    {
+      "name": "ledger_rename_title",
+      "value": "Rename Ledger"
+    },
+    {
+      "name": "ledger_name_hint",
+      "value": "Enter ledger name"
+    },
+    {
+      "name": "ledger_color_label",
+      "value": "Color"
+    },
+    {
+      "name": "ledger_create_success",
+      "value": "Created. Ready to track transactions"
+    },
+    {
+      "name": "ledger_rename_success",
+      "value": "Saved"
+    },
+    {
+      "name": "ledger_delete_title",
+      "value": "Delete this ledger?"
+    },
+    {
+      "name": "ledger_delete_confirm",
+      "value": "Its accounts, categories and budgets will also be deleted. This cannot be undone"
+    },
+    {
+      "name": "ledger_in_use_tag",
+      "value": "In Use"
+    },
+    {
+      "name": "ledger_default_tag",
+      "value": "Default"
+    },
+    {
+      "name": "ledger_switch_hint",
+      "value": "Tap \"Use\" to switch to this ledger"
+    },
+    {
+      "name": "ledger_switch_success",
+      "value": "Switched"
+    },
+    {
+      "name": "ledger_use_action",
+      "value": "Use"
+    },
+    {
+      "name": "export_success_count",
+      "value": "Export successful, %d records in total"
+    },
+    {
+      "name": "mine_diagnostics",
+      "value": "Export diagnostics"
+    },
+    {
+      "name": "diagnostics_hint",
+      "value": "The export contains only version, database status and technical logs. It contains no ledger entries, notes, account names or passwords."
+    },
+    {
+      "name": "diagnostics_export_action",
+      "value": "Export diagnostics"
+    },
+    {
+      "name": "diagnostics_export_success",
+      "value": "Diagnostics exported"
+    },
+    {
+      "name": "diagnostics_export_failed",
+      "value": "Export failed. Please try again."
+    }
+  ]
+}

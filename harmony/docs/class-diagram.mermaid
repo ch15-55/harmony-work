@@ -1,0 +1,413 @@
+%% 轻账本 LifeLedger · 数据模型与核心类图
+%% 来源：docs/ARCHITECTURE.md 第 4 章
+%% 说明：金额字段单位=分(INTEGER)；时间字段=UTC 毫秒(INTEGER)
+
+classDiagram
+    %% ========== 实体层 model/ ==========
+    class Ledger {
+        +number id
+        +string name
+        +string icon
+        +string color
+        +string currency
+        +boolean isDefault
+        +number sortOrder
+        +number createdAt
+        +number updatedAt
+        +fromRow(r: ResultSet) Ledger
+        +toValuesBucket() ValuesBucket
+    }
+
+    class Account {
+        +number id
+        +number ledgerId
+        +string name
+        +number type
+        +string icon
+        +string color
+        +number initialBalance
+        +number creditLimit
+        +boolean isArchived
+        +number sortOrder
+        +number createdAt
+        +number updatedAt
+        +fromRow(r: ResultSet) Account
+        +toValuesBucket() ValuesBucket
+    }
+
+    class Category {
+        +number id
+        +number ledgerId
+        +string name
+        +number type
+        +number parentId
+        +string icon
+        +string color
+        +number sortOrder
+        +boolean isSystem
+        +boolean isHidden
+        +number useCount
+        +number createdAt
+        +number updatedAt
+        +fromRow(r: ResultSet) Category
+        +toValuesBucket() ValuesBucket
+    }
+
+    class Transaction {
+        +number id
+        +number ledgerId
+        +number type
+        +number amount
+        +number accountId
+        +number toAccountId
+        +number categoryId
+        +number relatedTxId
+        +string note
+        +string[] imagePaths
+        +number txDate
+        +number createdAt
+        +number updatedAt
+        +fromRow(r: ResultSet) Transaction
+        +toValuesBucket() ValuesBucket
+        +isTransfer() boolean
+    }
+
+    class Budget {
+        +number id
+        +number ledgerId
+        +string month
+        +number totalAmount
+        +number carryOver
+        +number createdAt
+        +number updatedAt
+        +fromRow(r: ResultSet) Budget
+        +toValuesBucket() ValuesBucket
+    }
+
+    %% ========== 统计 DTO ==========
+    class AccountBalance {
+        +number accountId
+        +number initialBalance
+        +number income
+        +number expense
+        +number transferIn
+        +number transferOut
+        +get balance() number
+    }
+
+    class CategorySlice {
+        +number categoryId
+        +string categoryName
+        +string icon
+        +string color
+        +number amount
+        +number ratio
+    }
+
+    class MonthSummary {
+        +number income
+        +number expense
+        +get net() number
+    }
+
+    class MonthTrendPoint {
+        +string month
+        +number income
+        +number expense
+    }
+
+    class TxFilter {
+        +string keyword
+        +number[] categoryIds
+        +number[] accountIds
+        +number[] types
+        +number minAmount
+        +number maxAmount
+        +number startDate
+        +number endDate
+        +isEmpty() boolean
+    }
+
+    class AppSettings {
+        +number themeMode
+        +string currency
+        +number monthStartDay
+        +boolean lockEnabled
+        +string pinHash
+        +string pinSalt
+        +number lastAccountId
+        +number lastCategoryId
+        +boolean privacyAgreed
+        +boolean amountHidden
+    }
+
+    class Result~T~ {
+        +boolean ok
+        +T data
+        +string message
+    }
+
+    %% ========== 数据层 ==========
+    class DatabaseManager {
+        -static DatabaseManager instance
+        -relationalStore.RdbStore store
+        +static getInstance() DatabaseManager
+        +init(ctx: Context) Promise~void~
+        +getStore() relationalStore.RdbStore
+        +runInTransaction~T~(fn) Promise~T~
+        +clearAllData() Promise~void~
+    }
+
+    class SchemaConstants {
+        +static number CURRENT_SCHEMA_VERSION
+        +static string[] CREATE_TABLES
+        +static string[] CREATE_INDEXES
+    }
+
+    class MigrationManager {
+        +freshInstall(store) Promise~void~
+        +upgrade(store, from) Promise~void~
+        +readVersion(store) Promise~number~
+        +writeVersion(store, v) Promise~void~
+    }
+
+    class SeedDataManager {
+        +seedIfNeeded(store) Promise~void~
+        +insertDefaultLedger(store) Promise~void~
+        +insertPresetCategories(store) Promise~void~
+    }
+
+    class DataBus {
+        +static bump() void
+    }
+
+    %% ========== 服务层 ==========
+    class TransactionService {
+        +add(tx: Transaction) Promise~number~
+        +addTransfer(from, to, amount, note, date) Promise~object~
+        +update(tx: Transaction) Promise~void~
+        +delete(id: number) Promise~void~
+        +getById(id: number) Promise~Transaction~
+        +listByMonth(monthKey) Promise~Transaction[]~
+        +listByFilter(f: TxFilter) Promise~Transaction[]~
+        +search(keyword) Promise~Transaction[]~
+        +getRecent(n: number) Promise~Transaction[]~
+        +listMonthsWithData() Promise~string[]~
+    }
+
+    class AccountService {
+        +listAll(includeArchived) Promise~Account[]~
+        +add(a: Account) Promise~number~
+        +update(a: Account) Promise~void~
+        +archive(id: number) Promise~void~
+        +remove(id: number) Promise~void~
+        +hasTransactions(id: number) Promise~boolean~
+        +getBalance(id: number) Promise~AccountBalance~
+        +getAllBalances() Promise~AccountBalance[]~
+        +getNetAsset() Promise~object~
+    }
+
+    class CategoryService {
+        +listByType(type: number) Promise~Category[]~
+        +add(c: Category) Promise~number~
+        +update(c: Category) Promise~void~
+        +hide(id: number) Promise~void~
+        +increaseUseCount(id: number) Promise~void~
+    }
+
+    class BudgetService {
+        +getByMonth(month: string) Promise~Budget~
+        +save(month: string, total: number) Promise~void~
+        +getProgress(month: string) Promise~object~
+        +getLevel(used, total) number
+    }
+
+    class StatsService {
+        +getMonthSummary(month: string) Promise~MonthSummary~
+        +getCategorySlices(month: string, type: number) Promise~CategorySlice[]~
+        +getTrend(nMonths: number) Promise~MonthTrendPoint[]~
+    }
+
+    class ExportService {
+        +buildCsv(list: Transaction[]) string
+        +exportViaPicker(month: string) Promise~Result~string~~
+    }
+
+    class SettingsService {
+        +init(ctx: Context) Promise~void~
+        +isPrivacyAgreed() boolean
+        +setPrivacyAgreed(v: boolean) void
+        +getThemeMode() number
+        +setThemeMode(m: number) void
+        +getCurrency() string
+        +setCurrency(c: string) void
+        +getLastAccountId() number
+        +setLastAccountId(id: number) void
+        +getLastCategoryId() number
+        +setLastCategoryId(id: number) void
+        +isAmountHidden() boolean
+        +setAmountHidden(v: boolean) void
+    }
+
+    class AppLockService {
+        +isEnabled() boolean
+        +setPin(pin: string) Promise~void~
+        +verifyPin(pin: string) Promise~boolean~
+        +clearPin() void
+        +lock() void
+        +unlock() void
+        +isUnlocked() boolean
+    }
+
+    class ImageService {
+        +pickImages(max: number) Promise~string[]~
+        +copyToSandbox(uri: string) Promise~string~
+        +deleteByTx(paths: string[]) Promise~void~
+    }
+
+    %% ========== ViewModel 层 ==========
+    class ThemeStore {
+        +init(ctx: Context) void
+        +setMode(m: number) void
+        +applySystemMode() void
+        +isDark: boolean
+    }
+
+    class HomeViewModel {
+        +load() Promise~void~
+        +toggleAmountHidden() void
+        +asset: object
+        +summary: MonthSummary
+        +budget: object
+        +recent: Transaction[]
+    }
+
+    class RecordEditViewModel {
+        +load(params) Promise~void~
+        +loadForEdit(id: number) Promise~void~
+        +setType(t: number) void
+        +setCategory(id: number) void
+        +setAccount(id: number) void
+        +setDate(ts: number) void
+        +setNote(s: string) void
+        +setAmount(fen: number) void
+        +validate() Result~void~
+        +save() Promise~Result~number~~
+    }
+
+    class RecordsViewModel {
+        +load(month, keyword, filter) Promise~void~
+        +deleteTx(id: number) Promise~void~
+        +prevMonth() void
+        +nextMonth() void
+        +groups: object[]
+    }
+
+    class StatsViewModel {
+        +load(month, type, trendMonths) Promise~void~
+        +switchType(t: number) void
+        +switchMonth(m: string) void
+        +slices: CategorySlice[]
+        +trend: MonthTrendPoint[]
+    }
+
+    class MineViewModel {
+        +loadSummary() Promise~void~
+        +exportCsv(month: string) Promise~void~
+        +clearAllData() Promise~void~
+    }
+
+    %% ========== 工具与常量 ==========
+    class MoneyUtil {
+        +static fenToYuan(fen: number) number
+        +static yuanToFen(yuan: string) number
+        +static format(fen, currency, showSign) string
+        +static parseInput(text: string) number
+    }
+
+    class DateUtil {
+        +static now() number
+        +static startOfMonth(ts: number) number
+        +static endOfMonth(ts: number) number
+        +static monthKey(ts: number) string
+        +static formatDate(ts: number) string
+        +static formatTime(ts: number) string
+        +static dayLabel(ts: number) string
+        +static monthRange(backN: number) number[]
+        +static isFuture(ts: number) boolean
+    }
+
+    class ExpressionEvaluator {
+        +static evaluate(expr: string) number
+        +static appendToken(cur: string, input: string) string
+    }
+
+    class CryptoUtil {
+        +static sha256Hex(text: string) Promise~string~
+        +static randomHex(len: number) Promise~string~
+        +static hashPin(pin: string, salt: string) Promise~string~
+    }
+
+    class ThemeConstants {
+        <<interface>>
+        +Palette LightPalette
+        +Palette DarkPalette
+        +palette(isDark: boolean) Palette
+    }
+
+    class EntryAbility {
+        +onCreate(want, launchParam) void
+        +onWindowStageCreate(ws) void
+        +onForeground() void
+        +onConfigurationUpdate(cfg) void
+    }
+
+    %% ========== 关系 ==========
+    Transaction --> Category : categoryId
+    Transaction --> Account : accountId
+    Transaction --> Account : toAccountId
+    Transaction --> Ledger : ledgerId
+    Transaction --> Transaction : relatedTxId (转账配对)
+    Account --> Ledger : ledgerId
+    Category --> Ledger : ledgerId
+    Budget --> Ledger : ledgerId
+    CategorySlice --> Category : categoryId
+    AccountBalance --> Account : accountId
+
+    DatabaseManager --> SchemaConstants : 建表/索引
+    DatabaseManager --> MigrationManager : 版本迁移
+    MigrationManager --> SeedDataManager : 首次安装
+    DatabaseManager ..> relationalStore : 使用
+
+    TransactionService --> DatabaseManager
+    TransactionService --> DataBus : 写后 bump
+    AccountService --> DatabaseManager
+    CategoryService --> DatabaseManager
+    BudgetService --> DatabaseManager
+    StatsService --> DatabaseManager
+    ExportService --> TransactionService
+    ExportService --> FileUtil
+    ImageService --> FileUtil
+    AppLockService --> CryptoUtil
+    SettingsService ..> Preferences : 使用
+
+    HomeViewModel --> AccountService
+    HomeViewModel --> BudgetService
+    HomeViewModel --> StatsService
+    HomeViewModel --> SettingsService
+    RecordEditViewModel --> TransactionService
+    RecordEditViewModel --> CategoryService
+    RecordEditViewModel --> ExpressionEvaluator
+    RecordsViewModel --> TransactionService
+    RecordsViewModel --> StatsService
+    StatsViewModel --> StatsService
+    MineViewModel --> ExportService
+    MineViewModel --> AppLockService
+    MineViewModel --> SettingsService
+
+    TransactionService ..> MoneyUtil
+    StatsService ..> DateUtil
+    ThemeStore ..> ThemeConstants
+    EntryAbility --> SettingsService
+    EntryAbility --> ThemeStore
+    EntryAbility --> DatabaseManager

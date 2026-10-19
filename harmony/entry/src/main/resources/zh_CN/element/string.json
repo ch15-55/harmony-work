@@ -1,0 +1,824 @@
+{
+  "string": [
+    {
+      "name": "app_slogan",
+      "value": "纯本地记账本：不联网、零权限、无广告，快速记一笔，看清钱花在哪。"
+    },
+    {
+      "name": "module_desc",
+      "value": "纯本地记账，不联网、不收集数据"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "轻账本"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "轻账本"
+    },
+    {
+      "name": "tab_home",
+      "value": "首页"
+    },
+    {
+      "name": "tab_records",
+      "value": "明细"
+    },
+    {
+      "name": "tab_add",
+      "value": "记一笔"
+    },
+    {
+      "name": "tab_statistics",
+      "value": "统计"
+    },
+    {
+      "name": "tab_mine",
+      "value": "我的"
+    },
+    {
+      "name": "page_home_title",
+      "value": "首页"
+    },
+    {
+      "name": "page_records_title",
+      "value": "明细"
+    },
+    {
+      "name": "page_statistics_title",
+      "value": "统计"
+    },
+    {
+      "name": "page_mine_title",
+      "value": "我的"
+    },
+    {
+      "name": "page_placeholder_title",
+      "value": "轻账本"
+    },
+    {
+      "name": "page_record_edit_title",
+      "value": "记一笔"
+    },
+    {
+      "name": "page_tx_detail_title",
+      "value": "流水详情"
+    },
+    {
+      "name": "page_category_tx_list_title",
+      "value": "分类明细"
+    },
+    {
+      "name": "page_account_manage_title",
+      "value": "账户管理"
+    },
+    {
+      "name": "page_account_edit_title",
+      "value": "账户编辑"
+    },
+    {
+      "name": "page_category_manage_title",
+      "value": "分类管理"
+    },
+    {
+      "name": "page_budget_setting_title",
+      "value": "预算设置"
+    },
+    {
+      "name": "page_export_title",
+      "value": "导出数据"
+    },
+    {
+      "name": "page_theme_setting_title",
+      "value": "主题与货币"
+    },
+    {
+      "name": "page_applock_setting_title",
+      "value": "应用锁"
+    },
+    {
+      "name": "page_pin_verify_title",
+      "value": "请输入密码"
+    },
+    {
+      "name": "page_about_title",
+      "value": "关于轻账本"
+    },
+    {
+      "name": "page_privacy_policy_title",
+      "value": "隐私政策"
+    },
+    {
+      "name": "page_user_agreement_title",
+      "value": "用户协议"
+    },
+    {
+      "name": "page_diagnostics_title",
+      "value": "诊断信息"
+    },
+    {
+      "name": "privacy_dialog_title",
+      "value": "欢迎使用轻账本"
+    },
+    {
+      "name": "privacy_dialog_subtitle",
+      "value": "开始使用前，请先了解我们如何处理你的数据"
+    },
+    {
+      "name": "privacy_summary_title",
+      "value": "隐私摘要"
+    },
+    {
+      "name": "privacy_point_collect",
+      "value": "不收集任何个人信息"
+    },
+    {
+      "name": "privacy_point_storage",
+      "value": "数据仅保存在本机应用沙箱，卸载即删除"
+    },
+    {
+      "name": "privacy_point_network",
+      "value": "不发起任何网络请求，可完全离线使用"
+    },
+    {
+      "name": "privacy_point_sdk",
+      "value": "未接入任何第三方 SDK，无广告、无统计、无推送"
+    },
+    {
+      "name": "privacy_links_tip",
+      "value": "请阅读并同意"
+    },
+    {
+      "name": "privacy_policy_name",
+      "value": "《隐私政策》"
+    },
+    {
+      "name": "privacy_agreement_name",
+      "value": "《用户协议》"
+    },
+    {
+      "name": "privacy_and",
+      "value": "与"
+    },
+    {
+      "name": "privacy_btn_agree",
+      "value": "同意并继续"
+    },
+    {
+      "name": "privacy_btn_disagree",
+      "value": "不同意并退出"
+    },
+    {
+      "name": "privacy_loading",
+      "value": "正在加载"
+    },
+    {
+      "name": "privacy_load_failed",
+      "value": "内容加载失败，请返回后重试"
+    },
+    {
+      "name": "common_confirm",
+      "value": "确定"
+    },
+    {
+      "name": "common_cancel",
+      "value": "取消"
+    },
+    {
+      "name": "common_delete",
+      "value": "删除"
+    },
+    {
+      "name": "common_edit",
+      "value": "编辑"
+    },
+    {
+      "name": "common_save",
+      "value": "保存"
+    },
+    {
+      "name": "common_retry",
+      "value": "重试"
+    },
+    {
+      "name": "common_back",
+      "value": "返回"
+    },
+    {
+      "name": "common_loading",
+      "value": "加载中"
+    },
+    {
+      "name": "common_empty_title",
+      "value": "暂无数据"
+    },
+    {
+      "name": "common_error_title",
+      "value": "加载失败"
+    },
+    {
+      "name": "common_error_desc",
+      "value": "请稍后重试"
+    },
+    {
+      "name": "common_amount_mask",
+      "value": "****"
+    },
+    {
+      "name": "common_currency_cny",
+      "value": "¥"
+    },
+    {
+      "name": "toast_save_success",
+      "value": "已保存"
+    },
+    {
+      "name": "toast_save_failed",
+      "value": "保存失败，请重试"
+    },
+    {
+      "name": "toast_operate_failed",
+      "value": "操作失败，请重试"
+    },
+    {
+      "name": "toast_storage_full",
+      "value": "存储空间不足，请清理后重试"
+    },
+    {
+      "name": "toast_load_failed",
+      "value": "加载失败"
+    },
+    {
+      "name": "toast_db_upgrade_failed",
+      "value": "数据升级失败，请先导出备份后重装应用"
+    },
+    {
+      "name": "lock_title",
+      "value": "请输入密码"
+    },
+    {
+      "name": "lock_subtitle",
+      "value": "请输入 4 位数字密码以继续使用"
+    },
+    {
+      "name": "lock_error",
+      "value": "密码不正确，请重新输入"
+    },
+    {
+      "name": "lock_forgot",
+      "value": "忘记密码"
+    },
+    {
+      "name": "lock_forgot_message",
+      "value": "忘记密码需要清空全部数据以重置，且数据不可恢复。是否继续？"
+    },
+    {
+      "name": "lock_btn_reset",
+      "value": "清空并重置"
+    },
+    {
+      "name": "about_version_label",
+      "value": "版本"
+    },
+    {
+      "name": "about_offline_title",
+      "value": "完全离线"
+    },
+    {
+      "name": "about_offline_desc",
+      "value": "本应用完全离线运行，不收集、不上传任何用户数据"
+    },
+    {
+      "name": "about_nosdk_title",
+      "value": "无第三方库"
+    },
+    {
+      "name": "about_nosdk_desc",
+      "value": "本应用未使用任何第三方库，无广告、无统计、无推送"
+    },
+    {
+      "name": "about_privacy_entry",
+      "value": "隐私政策"
+    },
+    {
+      "name": "about_agreement_entry",
+      "value": "用户协议"
+    },
+    {
+      "name": "about_copyright",
+      "value": "轻账本 · 一本干净的本地账"
+    },
+    {
+      "name": "home_asset_total",
+      "value": "总资产"
+    },
+    {
+      "name": "home_asset_debt",
+      "value": "信用卡欠款"
+    },
+    {
+      "name": "home_asset_net",
+      "value": "净资产"
+    },
+    {
+      "name": "home_month_expense",
+      "value": "支出"
+    },
+    {
+      "name": "home_month_income",
+      "value": "收入"
+    },
+    {
+      "name": "home_month_net",
+      "value": "结余"
+    },
+    {
+      "name": "home_budget_title",
+      "value": "月度预算"
+    },
+    {
+      "name": "home_budget_used",
+      "value": "已用"
+    },
+    {
+      "name": "home_budget_remain",
+      "value": "剩余"
+    },
+    {
+      "name": "home_budget_daily",
+      "value": "日均可用"
+    },
+    {
+      "name": "home_budget_days_prefix",
+      "value": "剩"
+    },
+    {
+      "name": "home_budget_days_suffix",
+      "value": "天"
+    },
+    {
+      "name": "home_budget_not_set",
+      "value": "还没有设置本月预算"
+    },
+    {
+      "name": "home_budget_go_setting",
+      "value": "去设置"
+    },
+    {
+      "name": "home_recent_title",
+      "value": "最近记录"
+    },
+    {
+      "name": "home_view_all",
+      "value": "查看全部"
+    },
+    {
+      "name": "home_empty_recent",
+      "value": "还没有记录，点下方 ＋ 记下第一笔"
+    },
+    {
+      "name": "record_type_expense",
+      "value": "支出"
+    },
+    {
+      "name": "record_type_income",
+      "value": "收入"
+    },
+    {
+      "name": "record_type_transfer",
+      "value": "转账"
+    },
+    {
+      "name": "record_note_hint",
+      "value": "写点备注（100 字以内）"
+    },
+    {
+      "name": "record_date_label",
+      "value": "日期"
+    },
+    {
+      "name": "record_account_label",
+      "value": "账户"
+    },
+    {
+      "name": "record_from_account",
+      "value": "从账户"
+    },
+    {
+      "name": "record_to_account",
+      "value": "到账户"
+    },
+    {
+      "name": "record_category_more",
+      "value": "更多"
+    },
+    {
+      "name": "record_no_account",
+      "value": "请先在 我的 → 账户管理 中添加账户"
+    },
+    {
+      "name": "record_amount_invalid",
+      "value": "请输入正确的金额"
+    },
+    {
+      "name": "record_account_same",
+      "value": "转出与转入账户不能相同"
+    },
+    {
+      "name": "record_saved",
+      "value": "已记录"
+    },
+    {
+      "name": "record_save_transfer",
+      "value": "已记录转账"
+    },
+    {
+      "name": "record_again",
+      "value": "再记一笔"
+    },
+    {
+      "name": "list_search_hint",
+      "value": "搜索备注、分类、账户"
+    },
+    {
+      "name": "list_month_expense",
+      "value": "支出"
+    },
+    {
+      "name": "list_month_income",
+      "value": "收入"
+    },
+    {
+      "name": "list_month_net",
+      "value": "结余"
+    },
+    {
+      "name": "list_empty_month",
+      "value": "本月还没有记录"
+    },
+    {
+      "name": "list_delete_transfer_tip",
+      "value": "将同时删除对应的另一条转账记录"
+    },
+    {
+      "name": "stats_rank_title",
+      "value": "分类排行"
+    },
+    {
+      "name": "stats_trend_title",
+      "value": "收支趋势"
+    },
+    {
+      "name": "stats_empty",
+      "value": "本月还没有数据，记一笔后再来看看"
+    },
+    {
+      "name": "stats_type_expense",
+      "value": "支出"
+    },
+    {
+      "name": "stats_type_income",
+      "value": "收入"
+    },
+    {
+      "name": "common_month_suffix",
+      "value": "月"
+    },
+    {
+      "name": "common_year_suffix",
+      "value": "年"
+    },
+    {
+      "name": "common_count_suffix",
+      "value": "笔"
+    },
+    {
+      "name": "common_total_prefix",
+      "value": "共"
+    },
+    {
+      "name": "ledger_switch_title",
+      "value": "切换账本"
+    },
+    {
+      "name": "ledger_create_action",
+      "value": "新建账本"
+    },
+    {
+      "name": "ledger_manage_action",
+      "value": "管理账本"
+    },
+    {
+      "name": "page_ledger_manage_title",
+      "value": "账本管理"
+    },
+    {
+      "name": "ledger_create_title",
+      "value": "新建账本"
+    },
+    {
+      "name": "ledger_rename_title",
+      "value": "重命名账本"
+    },
+    {
+      "name": "ledger_name_hint",
+      "value": "输入账本名称"
+    },
+    {
+      "name": "ledger_color_label",
+      "value": "颜色"
+    },
+    {
+      "name": "ledger_create_success",
+      "value": "已创建，可以开始记账了"
+    },
+    {
+      "name": "ledger_rename_success",
+      "value": "已保存"
+    },
+    {
+      "name": "ledger_delete_title",
+      "value": "删除这个账本？"
+    },
+    {
+      "name": "ledger_delete_confirm",
+      "value": "删除后，该账本下的账户、分类与预算会一并删除，且不可恢复"
+    },
+    {
+      "name": "ledger_in_use_tag",
+      "value": "使用中"
+    },
+    {
+      "name": "ledger_default_tag",
+      "value": "默认"
+    },
+    {
+      "name": "ledger_switch_hint",
+      "value": "点「使用」切换到该账本"
+    },
+    {
+      "name": "ledger_switch_success",
+      "value": "已切换"
+    },
+    {
+      "name": "ledger_use_action",
+      "value": "使用"
+    },
+    {
+      "name": "common_none_value",
+      "value": "—"
+    },
+    {
+      "name": "list_search_empty",
+      "value": "没有找到匹配的记录"
+    },
+    {
+      "name": "list_delete_confirm_title",
+      "value": "删除这笔记录？"
+    },
+    {
+      "name": "list_delete_confirm_message",
+      "value": "删除后不可恢复，账户余额会同步更新"
+    },
+    {
+      "name": "toast_delete_success",
+      "value": "已删除"
+    },
+    {
+      "name": "toast_delete_failed",
+      "value": "删除失败，请重试"
+    },
+    {
+      "name": "record_edit_title",
+      "value": "编辑记录"
+    },
+    {
+      "name": "record_amount_label",
+      "value": "金额"
+    },
+    {
+      "name": "record_category_label",
+      "value": "分类"
+    },
+    {
+      "name": "record_transfer_hint",
+      "value": "转账不计入收支统计"
+    },
+    {
+      "name": "detail_category_label",
+      "value": "分类"
+    },
+    {
+      "name": "detail_account_label",
+      "value": "账户"
+    },
+    {
+      "name": "detail_transfer_path_label",
+      "value": "转账路径"
+    },
+    {
+      "name": "detail_date_label",
+      "value": "日期"
+    },
+    {
+      "name": "detail_time_label",
+      "value": "时间"
+    },
+    {
+      "name": "detail_note_label",
+      "value": "备注"
+    },
+    {
+      "name": "detail_created_label",
+      "value": "记录时间"
+    },
+    {
+      "name": "detail_missing",
+      "value": "这笔记录不存在或已被删除"
+    },
+    {
+      "name": "stats_pie_title",
+      "value": "分类占比"
+    },
+    {
+      "name": "stats_center_total",
+      "value": "合计"
+    },
+    {
+      "name": "stats_total_title",
+      "value": "总计"
+    },
+    {
+      "name": "stats_total_expense",
+      "value": "累计支出"
+    },
+    {
+      "name": "stats_total_income",
+      "value": "累计收入"
+    },
+    {
+      "name": "stats_total_net",
+      "value": "累计结余"
+    },
+    {
+      "name": "mine_group_ledger",
+      "value": "账本与账户"
+    },
+    {
+      "name": "mine_group_data",
+      "value": "数据与备份"
+    },
+    {
+      "name": "mine_group_general",
+      "value": "通用"
+    },
+    {
+      "name": "mine_group_about",
+      "value": "关于与帮助"
+    },
+    {
+      "name": "mine_ledger_manage",
+      "value": "账本管理"
+    },
+    {
+      "name": "mine_account_manage",
+      "value": "账户管理"
+    },
+    {
+      "name": "mine_category_manage",
+      "value": "分类管理"
+    },
+    {
+      "name": "mine_budget_manage",
+      "value": "月度预算"
+    },
+    {
+      "name": "mine_export",
+      "value": "导出数据"
+    },
+    {
+      "name": "mine_backup",
+      "value": "备份与恢复"
+    },
+    {
+      "name": "mine_diagnostics",
+      "value": "导出诊断信息"
+    },
+    {
+      "name": "mine_applock",
+      "value": "应用锁"
+    },
+    {
+      "name": "mine_theme",
+      "value": "主题与货币"
+    },
+    {
+      "name": "mine_privacy",
+      "value": "隐私政策"
+    },
+    {
+      "name": "mine_agreement",
+      "value": "用户协议"
+    },
+    {
+      "name": "mine_about",
+      "value": "关于轻账本"
+    },
+    {
+      "name": "mine_value_not_set",
+      "value": "未设置"
+    },
+    {
+      "name": "mine_value_on",
+      "value": "已开启"
+    },
+    {
+      "name": "mine_value_off",
+      "value": "未开启"
+    },
+    {
+      "name": "mine_theme_system",
+      "value": "跟随系统"
+    },
+    {
+      "name": "mine_theme_light",
+      "value": "浅色"
+    },
+    {
+      "name": "mine_theme_dark",
+      "value": "深色"
+    },
+    {
+      "name": "mine_unit_count",
+      "value": "个"
+    },
+    {
+      "name": "mine_offline_tip",
+      "value": "数据只存在这台设备上 · 不联网 · 无广告"
+    },
+    {
+      "name": "export_success_count",
+      "value": "导出成功，共 %d 笔记录"
+    },
+    {
+      "name": "backup_page_title",
+      "value": "备份与恢复"
+    },
+    {
+      "name": "backup_action",
+      "value": "立即备份"
+    },
+    {
+      "name": "backup_action_desc",
+      "value": "导出 JSON 备份文件"
+    },
+    {
+      "name": "restore_action",
+      "value": "从备份恢复"
+    },
+    {
+      "name": "restore_action_desc",
+      "value": "选择备份文件覆盖当前数据"
+    },
+    {
+      "name": "backup_hint",
+      "value": "备份文件包含全部账目数据（账本、账户、分类、预算、流水），导出后请妥善保管。"
+    },
+    {
+      "name": "restore_confirm_title",
+      "value": "覆盖当前数据？"
+    },
+    {
+      "name": "restore_confirm_message",
+      "value": "恢复将清空当前全部数据并替换为备份内容，且不可撤销。确定继续？"
+    },
+    {
+      "name": "backup_success_count",
+      "value": "备份成功，共 %d 条记录"
+    },
+    {
+      "name": "backup_restore_success_count",
+      "value": "恢复成功，共 %d 条记录"
+    },
+    {
+      "name": "backup_restore_failed",
+      "value": "恢复失败，请重试"
+    },
+    {
+      "name": "diagnostics_hint",
+      "value": "导出的文件仅包含应用版本、数据库状态和最近技术日志，不包含账目、备注、账户名称或密码。文件由你自行选择保存位置。"
+    },
+    {
+      "name": "diagnostics_export_action",
+      "value": "导出诊断信息"
+    },
+    {
+      "name": "diagnostics_export_success",
+      "value": "诊断信息已导出"
+    },
+    {
+      "name": "diagnostics_export_failed",
+      "value": "导出失败，请重试"
+    }
+  ]
+}

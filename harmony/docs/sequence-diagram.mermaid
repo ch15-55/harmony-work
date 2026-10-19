@@ -1,0 +1,284 @@
+%% 轻账本 LifeLedger · 关键流程时序图（5 个）
+%% 来源：docs/ARCHITECTURE.md 第 6 章
+
+%% ==================== ① 首次启动与隐私弹窗拦截 ====================
+sequenceDiagram
+    autonumber
+    participant U as 用户
+    participant EA as EntryAbility
+    participant SS as SettingsService
+    participant TS as ThemeStore
+    participant PP as PrivacyPage
+    participant DB as DatabaseManager
+    participant SD as SeedDataManager
+    participant IX as Index(Tabs)
+    participant AL as AppLockService
+
+    U->>EA: 冷启动
+    EA->>SS: init(context)
+    SS-->>EA: Preferences 就绪（不依赖 RDB）
+    EA->>TS: init(context)
+    TS->>TS: 读 themeMode → setColorMode()
+    TS->>TS: AppStorage.set('isDark', bool)
+
+    EA->>SS: isPrivacyAgreed()
+    alt 未同意（首次启动）
+        SS-->>EA: false
+        EA->>PP: loadContent('pages/PrivacyPage')
+        PP-->>U: 摘要4条 + 全文链接 + 两个按钮
+        U->>PP: 点《隐私政策》
+        PP->>PP: pushUrl('pages/PrivacyPolicyPage') 读 rawfile/privacy.md
+        U-->>PP: 返回
+        alt 点「同意并继续」
+            PP->>SS: setPrivacyAgreed(true)
+            PP->>DB: init(context)
+            DB->>DB: getRdbStore → 建表 → 读 ll_meta.schema_version
+            DB->>SD: freshInstall()
+            SD->>SD: 插入默认账本 + 17 条预置分类
+            SD-->>DB: done
+            DB-->>PP: 就绪
+            PP->>IX: router.replaceUrl('pages/Index')
+        else 点「不同意并退出」
+            PP->>EA: terminateSelf()
+            EA-->>U: 真实退出到桌面（进程终止）
+        end
+        Note over PP: onBackPress() 恒返回 true → 返回键/手势被拦截
+    else 已同意
+        SS-->>EA: true
+        EA->>DB: init(context)
+        DB-->>EA: 就绪
+        EA->>IX: loadContent('pages/Index')
+    end
+
+    IX->>AL: isEnabled()
+    alt 已开启应用锁
+        AL-->>IX: true → AppStorage.set('locked', true)
+        IX-->>U: 叠加 PinLockOverlay
+        U->>IX: 输入 PIN
+        IX->>AL: verifyPin(pin)
+        AL->>AL: sha256(salt+pin) 比对
+        AL-->>IX: true → AppStorage.set('locked', false)
+    end
+    IX-->>U: 展示 Tabs 主界面
+
+
+%% ==================== ② 记一笔支出并落库 ====================
+sequenceDiagram
+    autonumber
+    participant U as 用户
+    participant HP as HomePage
+    participant RC as RecordEditPage
+    participant KB as AmountKeyboard
+    participant EV as ExpressionEvaluator
+    participant VM as RecordEditViewModel
+    participant TS as TransactionService
+    participant CS as CategoryService
+    participant AS as AccountService
+    participant DB as DatabaseManager(RDB)
+    participant BUS as DataBus
+    participant SS as SettingsService
+
+    U->>HP: 点击中置「+」
+    HP->>RC: pushUrl('pages/RecordEditPage', {mode:'add'})
+    RC->>VM: load()
+    VM->>CS: listByType(EXPENSE)
+    VM->>AS: listAll(未归档)
+    VM->>SS: getLastAccountId() / getLastCategoryId()
+    VM-->>RC: 分类/账户/上次选择/默认今天
+
+    U->>RC: 选「支出」→ 点「餐饮」→ 选「招商银行」
+    U->>KB: 输入 1 2 + 8
+    KB->>KB: 追加到当前 token（表达式实时展示）
+    U->>KB: 点「完成」
+    KB->>EV: evaluate('12+8')
+    EV-->>KB: 20 → onAmount(2000分)
+
+    U->>RC: 填备注 → 点「保存」
+    RC->>VM: validate()
+    alt 金额为空 / 为 0 / 未选账户
+        VM-->>RC: 校验失败 → Toast + 保存键置灰
+    else 校验通过
+        VM->>TS: add(Transaction)
+        TS->>DB: runInTransaction(async () => {...})
+        DB->>DB: beginTransaction()
+        DB->>DB: insert(ll_transaction, {amount:2000, type:0})
+        DB->>CS: increaseUseCount(categoryId)
+        DB-->>TS: rowId
+        DB->>DB: commit()
+        TS->>SS: setLastAccountId / setLastCategoryId
+        TS->>BUS: bump() → AppStorage('dataVersion')++
+        TS-->>VM: rowId
+        VM-->>RC: success
+        RC-->>U: Toast「已记录 ¥20.00」+「再记一笔」
+        RC->>HP: router.back()
+    end
+
+    Note over HP: onPageShow() + @Watch('dataVersion') 双触发
+    HP->>VM: load()
+    VM->>AS: getNetAsset() → 资产卡
+    VM->>SS: getMonthSummary() → 结余卡
+    VM->>SS: getBudgetProgress() → 预算卡（80%/100% 分级配色）
+    VM->>TS: getRecent(5) → 最近流水
+    HP-->>U: 全卡片刷新
+
+
+%% ==================== ③ 转账双流水事务 ====================
+sequenceDiagram
+    autonumber
+    participant U as 用户
+    participant RC as RecordEditPage
+    participant VM as RecordEditViewModel
+    participant TS as TransactionService
+    participant DB as DatabaseManager(RDB)
+    participant AS as AccountService
+    participant BUS as DataBus
+
+    U->>RC: 切到「转账」Tab
+    RC->>RC: 隐藏分类宫格，显示「从账户 → 到账户」
+    U->>RC: 从「招商银行」→ 到「现金」，金额 500.00
+    U->>RC: 点「保存」
+    RC->>VM: validate()
+    alt 转出与转入账户相同 / 金额为 0
+        VM-->>RC: Toast「转出与转入账户不能相同」
+    else 通过
+        VM->>TS: addTransfer(fromId, toId, amount, note, date)
+        TS->>DB: runInTransaction(async (store) => {...})
+        DB->>DB: beginTransaction()
+        DB->>DB: insert(TxA{type:2, accountId:from, toAccountId:to, relatedTxId:0})
+        DB-->>TS: idA
+        DB->>DB: insert(TxB{type:2, accountId:to, toAccountId:from, relatedTxId:idA})
+        DB-->>TS: idB
+        DB->>DB: update TxA SET related_tx_id = idB
+        DB->>DB: commit()
+        Note over DB: 任一步异常 → rollBack() → 两条都不落库
+        TS->>BUS: bump()
+        TS-->>VM: {idA, idB}
+        VM-->>RC: success
+        RC-->>U: Toast「已记录转账 ¥500.00」
+        RC->>RC: router.back()
+    end
+
+    Note over U,BUS: —— 删除侧 ——
+    U->>RC: 明细页点某条转账 → 删除
+    RC->>RC: ConfirmDialog「将同时删除对应的另一条转账记录」
+    U->>RC: 确认
+    RC->>TS: delete(idA)
+    TS->>DB: runInTransaction(async (store) => {...})
+    DB->>DB: beginTransaction()
+    DB->>DB: SELECT related_tx_id WHERE id = idA
+    DB-->>TS: idB
+    DB->>DB: DELETE WHERE id IN (idA, idB)
+    DB->>DB: commit()
+    TS->>BUS: bump()
+    TS-->>RC: 删除成功
+
+    Note over AS: 余额为实时计算，无需回写冗余字段<br/>转账不进入收支统计（WHERE type IN (0,1) 排除 type=2）
+
+
+%% ==================== ④ 统计页数据聚合与图表渲染 ====================
+sequenceDiagram
+    autonumber
+    participant U as 用户
+    participant SP as StatisticsPage
+    participant VM as StatsViewModel
+    participant SS as StatsService
+    participant DB as DatabaseManager(RDB)
+    participant DC as DonutChart
+    participant LC as LineChart
+    participant BL as BarRankList
+    participant TC as ThemeConstants
+
+    U->>SP: 切到「统计」Tab
+    SP->>SP: onPageShow / @Watch('dataVersion')
+    SP->>VM: load(month, type=支出, trendMonths=6)
+    VM->>SS: getMonthSummary(ledgerId, start, end)
+    SS->>DB: querySql(SUM GROUP BY type) → idx_tx_ledger_type_date
+    DB-->>SS: {income, expense}
+    SS-->>VM: MonthSummary
+
+    VM->>SS: getCategorySlices(ledgerId, EXPENSE, start, end)
+    SS->>DB: querySql(SUM GROUP BY category_id ORDER BY t DESC)
+    DB-->>SS: rows
+    SS->>SS: 关联 category 补 name/icon/color；算 ratio；<2% 合并为「其他」
+    SS-->>VM: CategorySlice[]
+
+    VM->>SS: getTrend(ledgerId, 6)
+    SS->>DB: querySql(SELECT tx_date,type,amount WHERE 区间)
+    DB-->>SS: rows(~3600)
+    SS->>SS: 内存按 ym 分组（避免 strftime 兼容问题）
+    SS-->>VM: MonthTrendPoint[6]
+
+    VM-->>SP: {summary, slices, trend}
+    SP->>TC: palette(isDark) 取色
+    TC-->>SP: Palette
+
+    SP->>DC: 渲染({slices, colors, animate:true})
+    DC->>DC: animProgress(0→1, 600ms) → invalidate 逐帧绘制 arc()
+    DC-->>U: 环形图（中心显示总额）
+    SP->>BL: 渲染({slices}) → 排行列表
+    SP->>LC: 渲染({trend, animate:true})
+    LC->>LC: animProgress(0→1, 400ms) → 裁剪式揭示
+    LC-->>U: 双折线 + 网格 + 拐点
+
+    U->>DC: 点击某扇区
+    DC->>DC: 极坐标命中检测（半径 + 角度 → 扇区索引）
+    DC-->>SP: onSliceClick(categoryId)
+    SP->>SP: pushUrl('pages/CategoryTxListPage', {categoryId, month})
+
+    U->>LC: 点击某拐点
+    LC->>LC: 找最近 x 坐标 → @State 记录 index
+    LC-->>U: 画布内绘制数值气泡
+
+    Note over SP: onPageHide() → cancelAnimationFrame() 取消动画
+
+
+%% ==================== ⑤ CSV 导出走 DocumentViewPicker（免权限） ====================
+sequenceDiagram
+    autonumber
+    participant U as 用户
+    participant EP as ExportPage
+    participant VM as MineViewModel
+    participant ES as ExportService
+    participant TS as TransactionService
+    participant FU as FileUtil
+    participant PK as picker.DocumentViewPicker
+    participant FS as fileIo(沙箱)
+    participant SYS as 系统保存面板
+
+    U->>EP: 我的 → 导出 CSV
+    EP->>VM: loadMonths()
+    VM->>TS: 查询有流水的月份列表
+    VM-->>EP: ['全部','2026-05','2026-04',...]
+    U->>EP: 选「2026-05」→ 点「导出」
+    EP->>ES: exportViaPicker('2026-05')
+
+    ES->>TS: listByMonth(ledgerId, start, end)
+    TS-->>ES: Transaction[]
+    alt 无数据
+        ES-->>EP: EmptyState「该月份暂无记录」
+    else 有数据
+        ES->>ES: buildCsv(txList)
+        Note over ES: 表头：日期,时间,类型,金额,分类,一级分类,账户,备注,账本<br/>支出带负号 / 收入带正号，单位元，两位小数<br/>字符串字段转义双引号与逗号
+        ES-->>ES: csvString
+        ES->>FU: writeTemp('export/轻账本_2026-05.csv', BOM + utf8Bytes)
+        FU->>FS: openSync(filesDir/export/..., CREATE|WRITE_ONLY)
+        FS-->>FU: fd
+        FU->>FS: writeSync(fd, [0xEF,0xBB,0xBF] + encoded)
+        FU->>FS: closeSync(fd)
+        FU-->>ES: sandboxPath
+
+        ES->>PK: new DocumentViewPicker(context).save({<br/>newFileNames:['轻账本_2026-05.csv'],<br/>fileSuffixChoices:['CSV 表格|.csv'],<br/>pickerMode: DOWNLOAD})
+        PK->>SYS: 拉起系统保存面板
+        U->>SYS: 选择目录 → 确认
+        SYS-->>PK: documentSaveResult: string[]
+        PK-->>ES: [targetUri]
+
+        ES->>FS: openSync(targetUri, WRITE_ONLY|CREATE)
+        ES->>FS: copyFileSync(sandboxFd, targetFd)
+        ES->>FS: closeSync + unlinkSync(沙箱临时文件)
+        ES-->>EP: success(targetUri)
+        EP-->>U: Toast「已保存到 下载/轻账本_2026-05.csv」
+    end
+
+    Note over ES: 用户取消保存 → save() 抛异常或返回空数组<br/>→ try-catch 静默返回，不报错提示
+    Note over ES: 全程零权限：DocumentViewPicker 由系统授予临时写权限
