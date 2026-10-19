@@ -1,0 +1,60 @@
+name: Build & Verify
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  # 不依赖 HarmonyOS SDK：校验仓库规范与 Python 工具单测，任何环境都能跑绿。
+  validate:
+    name: Repo validation (no SDK required)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Run tooling unit tests
+        run: python -m unittest discover -s tools -p "test_*.py" -v
+
+      - name: Ensure signing material stays local (gitignored)
+        run: |
+          if [ -f harmony/build-profile.json5 ]; then
+            echo "ERROR: harmony/build-profile.json5 must be gitignored and never committed"
+            exit 1
+          fi
+          test -f harmony/build-profile.example.json5 || {
+            echo "ERROR: missing harmony/build-profile.example.json5 template"; exit 1; }
+
+      - name: Structural sanity
+        run: |
+          test -f harmony/entry/src/test/List.test.ets || {
+            echo "ERROR: ArkTS unit test entry missing"; exit 1; }
+          test -f harmony/entry/oh-package.json5 || {
+            echo "ERROR: missing harmony/entry/oh-package.json5"; exit 1; }
+
+  # 需要本机装有 DevEco Studio / HarmonyOS SDK 的自托管 Runner。
+  # 在仓库 Settings → Secrets and variables → Actions 中设置变量 RUN_HARMONY_BUILD=true
+  # 与 DEVECO_SDK_HOME（SDK 路径），才会触发；GitHub 托管 Runner 上自动跳过。
+  harmony-build:
+    name: HarmonyOS build & ArkTS unit tests (self-hosted, requires DevEco SDK)
+    runs-on: self-hosted
+    if: ${{ vars.RUN_HARMONY_BUILD == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Place local signing config on runner
+        run: echo "Expect harmony/build-profile.json5 with signing material on the self-hosted runner."
+
+      - name: Build HAP and run ArkTS unit tests
+        shell: pwsh
+        env:
+          DEVECO_SDK_HOME: ${{ vars.DEVECO_SDK_HOME }}
+        run: |
+          if (-not $env:DEVECO_SDK_HOME) { throw "DEVECO_SDK_HOME is not set" }
+          ./tools/test_ascii.ps1
