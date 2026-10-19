@@ -5,6 +5,10 @@
       "value": "16vp"
     },
     {
+      "name": "radius_card_sm",
+      "value": "12vp"
+    },
+    {
       "name": "radius_button",
       "value": "12vp"
     },
@@ -41,6 +45,10 @@
       "value": "28fp"
     },
     {
+      "name": "font_display",
+      "value": "34fp"
+    },
+    {
       "name": "space_xs",
       "value": "4vp"
     },
@@ -70,7 +78,7 @@
     },
     {
       "name": "card_shadow_radius",
-      "value": "8vp"
+      "value": "12vp"
     },
     {
       "name": "divider_height",

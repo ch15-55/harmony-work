@@ -3,7 +3,16 @@
  * 深浅色切换必须数据驱动：组件只写 palette(this.isDark).xxx，
  * 严禁在组件内写 if (isDark) A else B 或硬编码色值。
  * Canvas 无法使用 $r()，图表取色同样从本文件 TS 色板获取。
+ * v1.2 美化：新增渐变卡文字色、按压态、功能色淡底与卡片阴影收口（cardShadow）。
  */
+
+/** 卡片阴影取值（结构对齐 ArkUI ShadowOptions，便于统一收口） */
+export interface CardShadowValue {
+  radius: number;
+  color: string;
+  offsetX: number;
+  offsetY: number;
+}
 
 /** 主题色板结构（键与架构 9.3 对照表一一对应） */
 export interface Palette {
@@ -49,11 +58,25 @@ export interface Palette {
   shadow: string;
   /** 深色模式卡片描边 / 浅色模式辅助底色 */
   border: string;
+  /** 渐变卡（资产大卡）上的主文字色 */
+  textOnGradient: string;
+  /** 渐变卡上的辅助文字色 */
+  textOnGradientSecondary: string;
+  /** 按压态背景（按钮/条目按下反馈） */
+  bgPress: string;
+  /** 主色淡底（选中胶囊/次要按钮底色） */
+  primarySoft: string;
+  /** 支出淡底（收支徽章/淡色块） */
+  expenseSoft: string;
+  /** 收入淡底 */
+  incomeSoft: string;
+  /** 预警淡底 */
+  warningSoft: string;
 }
 
-/** 浅色色板（PRD 5.1 设计语言） */
+/** 浅色色板（PRD 5.1 设计语言，v1.2 美化调优） */
 export const LIGHT_PALETTE: Palette = {
-  bgPage: '#F5F6FA',
+  bgPage: '#F4F5F9',
   bgCard: '#FFFFFF',
   bgElevated: '#FFFFFF',
   gradStart: '#5B67F5',
@@ -72,8 +95,15 @@ export const LIGHT_PALETTE: Palette = {
   chartGrid: '#EEF0F5',
   chartAxis: '#8A8F9E',
   chartEmpty: '#EEF0F5',
-  shadow: '#0F000000',
-  border: '#EEF0F5'
+  shadow: '#14000000',
+  border: '#EEF0F5',
+  textOnGradient: '#FFFFFF',
+  textOnGradientSecondary: '#C9CFFF',
+  bgPress: '#EAECF3',
+  primarySoft: '#E9EBFE',
+  expenseSoft: '#FDEBEA',
+  incomeSoft: '#E4F8EF',
+  warningSoft: '#FEF4E2'
 };
 
 /** 深色色板（PRD 5.1：背景 #12141A / 卡片 #1C1F27，支出收入独立色） */
@@ -98,7 +128,14 @@ export const DARK_PALETTE: Palette = {
   chartAxis: '#6B7280',
   chartEmpty: '#2A2E38',
   shadow: '#00000000',
-  border: '#2A2E38'
+  border: '#2A2E38',
+  textOnGradient: '#FFFFFF',
+  textOnGradientSecondary: '#D3D8FF',
+  bgPress: '#2F3440',
+  primarySoft: '#262A45',
+  expenseSoft: '#3A2523',
+  incomeSoft: '#17352A',
+  warningSoft: '#3A2E17'
 };
 
 /**
@@ -107,4 +144,21 @@ export const DARK_PALETTE: Palette = {
  */
 export function palette(isDark: boolean): Palette {
   return isDark ? DARK_PALETTE : LIGHT_PALETTE;
+}
+
+/**
+ * 卡片阴影统一收口（v1.2 美化）。
+ * 浅色：柔和投影营造层次；深色：无投影（用 1vp 描边替代，见 cardBorderWidth）。
+ * 用法：.shadow(cardShadow(this.isDark))，与 .borderWidth(cardBorderWidth(this.isDark)) 配套。
+ */
+export function cardShadow(isDark: boolean): CardShadowValue {
+  if (isDark) {
+    return { radius: 0, color: '#00000000', offsetX: 0, offsetY: 0 };
+  }
+  return { radius: 12, color: LIGHT_PALETTE.shadow, offsetX: 0, offsetY: 4 };
+}
+
+/** 卡片描边宽度统一收口：浅色 0（阴影已表达层次），深色 1vp */
+export function cardBorderWidth(isDark: boolean): number {
+  return isDark ? 1 : 0;
 }
