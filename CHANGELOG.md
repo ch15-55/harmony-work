@@ -2,6 +2,34 @@
 
 本仓库遵循 `类型: 内容` 的提交约定（见 `AGENTS.md`）。以下按版本汇总已验证的改动。
 
+## [1.2.1] - 2026-10-19 — 视觉改版与页面转场动效
+
+> 目标：按 HarmonyOS Design 规范（4vp 网格 / 字号阶梯 / 圆角阶梯 / 克制配色）整体提升美观度，
+> 并让页面切换流畅。纯展示层改动，不动数据层、协议与功能。
+
+### 新增
+- **主题令牌重构**（`constants/ThemeConstants.ets`）：色板新增渐变卡文字色
+  `textOnGradient`/`textOnGradientSecondary`、按压态 `bgPress`、功能色淡底
+  `primarySoft`/`expenseSoft`/`incomeSoft`/`warningSoft`；新增 `cardShadow()` /
+  `cardBorderWidth()` 统一收口卡片层次（浅色柔和投影、深色 1vp 描边），组件不再散落阴影参数。
+- **资源令牌**：`float.json` 新增 `font_display`（34fp 展示级数字）、`radius_card_sm`（12vp），
+  卡片阴影半径 8vp → 12vp；浅色页面底色微调。
+- **全站转场动效**：19 个页面统一 `pageTransition()`——二级页右侧滑入（Push 300ms EaseOut /
+  Pop 280ms EaseIn），记账页底部滑入（模态编辑感），Tabs 根页被覆盖时 -10% 视差左移呼应；
+  Tabs 增加 260ms 切换动画。插入脚本 `tools/add_page_transition.py`（幂等）。
+
+### 优化
+- 资产大卡：总资产数字升至 34fp 展示级字号，渐变卡文字色全部走色板（消除组件内硬编码色值）。
+- 首页月度汇总 / 预算 / 最近记录、统计页四卡、我的页四组、明细页月份切换容器：统一卡片层次。
+- 预算「去设置」按钮改淡底样式；记账页金额大字与键盘回显同步 34fp；类型切换胶囊 180ms 平滑过渡。
+- 搜索栏加高至 44vp、放大镜符号配色统一；流水条目卡片态统一阴影；空态留白收敛。
+
+### 验证
+- 完整构建：`tools/build_ascii.ps1` → `BUILD SUCCESSFUL`（仅原有警告）。
+- ArkTS 单测：`tools/test_ascii.ps1` → 26/26 通过，无回归。
+- 已知取舍：`stateStyles` 按压态在本机 ArkTS 编译器（ets-loader）存在内部崩溃
+  （`Node must have a real position`），已移除相关用法；其余动效（转场/过渡）不受影响。
+
 ## [1.2.0] - 2026-10-19 — 测试保障与架构可测性
 
 > 目标：把团队标尺从 6.0/10 提升到各项约 8.5，重点补齐三大致命伤（无 git、无 CI、架构不可测）。
