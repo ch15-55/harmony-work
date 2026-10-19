@@ -2,11 +2,12 @@
  * 模块职责：分类 4 列宫格（架构 T04 record/CategoryGrid）。
  * - 数据：Category[]（页面/ViewModel 按当前类型加载），末尾固定「更多」格
  * - 选中态：主色描边 + 名称主色；色块用分类自身 color（数据驱动）
- * - 简洁化：格内不渲染图标字形，浅色圆 + 实色小点标识分类
+ * - 图标：IconConstants.iconGlyph 兜底字形（PNG 资源未产出前的既定方案），渲染在浅色圆上
  * - 空状态：仅渲染「更多」格（用户清空自定义分类时仍可跳转管理页）
  */
 import { palette } from '../../constants/ThemeConstants';
 import { AppStorageKeys } from '../../constants/AppConstants';
+import { IconConstants } from '../../constants/IconConstants';
 import { Category } from '../../model/Category';
 import { hexToRgba } from '../chart/ChartCanvasBase';
 
@@ -29,13 +30,13 @@ export struct CategoryGrid {
     Grid() {
       ForEach(this.categories, (category: Category) => {
       GridItem() {
-        this.categoryCell(category.id, category.name, category.color)
+        this.categoryCell(category.id, category.name, category.color, category.icon)
       }
     }, (category: Category) => 'cat_' + category.id.toString())
 
       GridItem() {
         this.categoryCell(MORE_SENTINEL_ID, $r('app.string.record_category_more'),
-          palette(this.isDark).textSecondary)
+          palette(this.isDark).textSecondary, '')
       }
     }
     .columnsTemplate('1fr 1fr 1fr 1fr')
@@ -44,9 +45,9 @@ export struct CategoryGrid {
     .width('100%')
   }
 
-  /** 单元格：more 哨兵时点击走 onMore；浅色圆 + 实色小点 + 名称 */
+  /** 单元格：more 哨兵时点击走 onMore；浅色圆 + 兜底字形 + 名称 */
   @Builder
-  private categoryCell(id: number, name: string | Resource, color: string) {
+  private categoryCell(id: number, name: string | Resource, color: string, icon: string) {
     Column({ space: 4 }) {
       Stack() {
         Circle()
@@ -58,10 +59,8 @@ export struct CategoryGrid {
           .stroke(id === this.selectedId ? palette(this.isDark).primary : Color.Transparent)
           .strokeWidth(id === this.selectedId ? 2 : 0)
         if (id !== MORE_SENTINEL_ID) {
-          Circle()
-            .width(14)
-            .height(14)
-            .fill(color)
+          Text(IconConstants.iconGlyph(icon))
+            .fontSize(22)
         } else {
           Text('···')
             .fontSize(14)

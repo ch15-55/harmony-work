@@ -32,6 +32,8 @@ export class IconConstants {
     ['ic_cat_interest', '🪙'],
     ['ic_cat_redpacket', '🧧'],
     ['ic_cat_reimburse', '🧾'],
+    // 自定义分类/实体默认键（model/Category 构造默认值 'more'，无图形时与「其他」一致）
+    ['more', '⋯'],
     // 账户类型
     ['ic_acc_cash', '💵'],
     ['ic_acc_debit', '💳'],

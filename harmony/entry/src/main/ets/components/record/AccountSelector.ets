@@ -57,10 +57,8 @@ export struct AccountSelector {
           .layoutWeight(1)
       } else {
         Row({ space: 8 }) {
-          Circle()
-            .width(12)
-            .height(12)
-            .fill(this.currentOption()!.color)
+          Text(IconConstants.iconGlyph(this.currentOption()!.icon))
+            .fontSize(18)
 
           Text(this.currentOption()!.name)
             .fontSize($r('app.float.font_body'))
@@ -120,10 +118,8 @@ export struct AccountSelector {
           ForEach(this.options, (option: AccountOption) => {
             ListItem() {
               Row({ space: 12 }) {
-                Circle()
-                  .width(12)
-                  .height(12)
-                  .fill(option.color)
+                Text(IconConstants.iconGlyph(option.icon))
+                  .fontSize(20)
 
                 Text(option.name)
                   .fontSize($r('app.float.font_body'))
