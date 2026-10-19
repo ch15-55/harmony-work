@@ -16,6 +16,11 @@ export struct DateSelector {
   @Prop txDate: number = 0;
   /** 是否允许选择未来日期（默认禁止） */
   @Prop allowFuture: boolean = false;
+  /**
+   * 极简模式：去除自身卡片底色/圆角/左右内边距，融入外层分组卡片。
+   * 默认 false 保持独立卡片外观。
+   */
+  @Prop plain: boolean = false;
   /** 日期变更回调 */
   onDateChange?: (ts: number) => void;
 
@@ -62,9 +67,11 @@ export struct DateSelector {
     }
     .width('100%')
     .height(48)
-    .padding({ left: $r('app.float.card_padding'), right: $r('app.float.card_padding') })
-    .borderRadius($r('app.float.radius_button'))
-    .backgroundColor(palette(this.isDark).bgElevated)
+    .padding(this.plain
+      ? { left: 0, right: 0 }
+      : { left: $r('app.float.card_padding'), right: $r('app.float.card_padding') })
+    .borderRadius(this.plain ? 0 : $r('app.float.radius_button'))
+    .backgroundColor(this.plain ? Color.Transparent : palette(this.isDark).bgElevated)
     .onClick(() => {
       this.openPicker();
     })

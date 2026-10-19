@@ -109,7 +109,7 @@ struct Index {
   /** 自绘 Tab 项 */
   @Builder
   tabBuilder(index: number) {
-    Column({ space: 2 }) {
+    Column({ space: 3 }) {
       if (index === 2) {
         // 中置「＋」圆钮：主色渐变（Stack 默认中心对齐，保证符号在圆钮正中）
         Stack() {
@@ -132,11 +132,12 @@ struct Index {
         })
       } else {
         SymbolGlyph(this.tabSymbol(index))
-          .fontSize(20)
+          .fontSize(22)
           .fontColor([this.currentIndex === index ?
           palette(this.isDark).primary : palette(this.isDark).textSecondary])
         Text(this.tabLabel(index))
           .fontSize(10)
+          .fontWeight(this.currentIndex === index ? FontWeight.Medium : FontWeight.Normal)
           .fontColor(this.currentIndex === index ?
           palette(this.isDark).primary : palette(this.isDark).textSecondary)
       }
@@ -195,7 +196,8 @@ struct Index {
       }
       .scrollable(false)
       .animationDuration(260)
-      .barHeight(56)
+      .barHeight(64)
+      .barBackgroundColor(palette(this.isDark).bgCard)
       .width('100%')
       .height('100%')
       .onChange((index: number) => {

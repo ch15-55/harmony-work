@@ -75,8 +75,8 @@ export struct BudgetProgressCard {
     Column({ space: 12 }) {
       Row() {
         Text($r('app.string.home_budget_title'))
-          .fontSize($r('app.float.font_title'))
-          .fontWeight(FontWeight.Medium)
+          .fontSize($r('app.float.font_subtitle'))
+          .fontWeight(FontWeight.Bold)
           .fontColor(palette(this.isDark).textPrimary)
       }
       .width('100%')

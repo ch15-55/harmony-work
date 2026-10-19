@@ -74,65 +74,65 @@ export interface Palette {
   warningSoft: string;
 }
 
-/** 浅色色板（PRD 5.1 设计语言，v1.2 美化调优） */
+/** 浅色色板（极简黑白灰：页面与卡片同色、无阴影、发丝线分层；红绿仅用于金额语义） */
 export const LIGHT_PALETTE: Palette = {
-  bgPage: '#F4F5F9',
+  bgPage: '#FFFFFF',
   bgCard: '#FFFFFF',
-  bgElevated: '#FFFFFF',
-  gradStart: '#5B67F5',
-  gradEnd: '#8B5CF6',
-  primary: '#5B67F5',
+  bgElevated: '#F4F4F6',
+  gradStart: '#1A1C25',
+  gradEnd: '#2E313B',
+  primary: '#1A1C25',
   expense: '#F5544B',
   income: '#12B76A',
-  transfer: '#5B67F5',
+  transfer: '#1A1C25',
   warning: '#F59E0B',
   danger: '#F5544B',
   textPrimary: '#1A1C25',
   textSecondary: '#8A8F9E',
   textTertiary: '#B4B9C7',
-  divider: '#EEF0F5',
+  divider: '#EFEFF1',
   mask: '#80000000',
-  chartGrid: '#EEF0F5',
+  chartGrid: '#EFEFF1',
   chartAxis: '#8A8F9E',
-  chartEmpty: '#EEF0F5',
-  shadow: '#14000000',
-  border: '#EEF0F5',
+  chartEmpty: '#EFEFF1',
+  shadow: '#00000000',
+  border: '#EFEFF1',
   textOnGradient: '#FFFFFF',
-  textOnGradientSecondary: '#C9CFFF',
-  bgPress: '#EAECF3',
-  primarySoft: '#E9EBFE',
+  textOnGradientSecondary: '#AEB2BC',
+  bgPress: '#ECECEF',
+  primarySoft: '#F0F0F2',
   expenseSoft: '#FDEBEA',
   incomeSoft: '#E4F8EF',
   warningSoft: '#FEF4E2'
 };
 
-/** 深色色板（PRD 5.1：背景 #12141A / 卡片 #1C1F27，支出收入独立色） */
+/** 深色色板（同构极简：卡片与页面同色，主色反转为近白） */
 export const DARK_PALETTE: Palette = {
   bgPage: '#12141A',
-  bgCard: '#1C1F27',
-  bgElevated: '#252932',
-  gradStart: '#5B67F5',
-  gradEnd: '#8B5CF6',
-  primary: '#7B85F7',
+  bgCard: '#12141A',
+  bgElevated: '#1E222A',
+  gradStart: '#2E323C',
+  gradEnd: '#3A3F4C',
+  primary: '#EDEEF2',
   expense: '#FF6B61',
   income: '#3DDC97',
-  transfer: '#7B85F7',
+  transfer: '#EDEEF2',
   warning: '#FBBF24',
   danger: '#FF6B61',
   textPrimary: '#EDEEF2',
   textSecondary: '#9BA1B0',
   textTertiary: '#6B7280',
-  divider: '#2A2E38',
+  divider: '#262A31',
   mask: '#B3000000',
-  chartGrid: '#2A2E38',
+  chartGrid: '#262A31',
   chartAxis: '#6B7280',
-  chartEmpty: '#2A2E38',
+  chartEmpty: '#262A31',
   shadow: '#00000000',
-  border: '#2A2E38',
+  border: '#262A31',
   textOnGradient: '#FFFFFF',
-  textOnGradientSecondary: '#D3D8FF',
-  bgPress: '#2F3440',
-  primarySoft: '#262A45',
+  textOnGradientSecondary: '#9BA1B0',
+  bgPress: '#2A2E38',
+  primarySoft: '#262A31',
   expenseSoft: '#3A2523',
   incomeSoft: '#17352A',
   warningSoft: '#3A2E17'
@@ -147,18 +147,14 @@ export function palette(isDark: boolean): Palette {
 }
 
 /**
- * 卡片阴影统一收口（v1.2 美化）。
- * 浅色：柔和投影营造层次；深色：无投影（用 1vp 描边替代，见 cardBorderWidth）。
- * 用法：.shadow(cardShadow(this.isDark))，与 .borderWidth(cardBorderWidth(this.isDark)) 配套。
+ * 卡片阴影统一收口（极简风：全面取消投影，层次靠发丝线与留白表达）。
+ * 保留函数签名兼容既有调用，恒返回透明值。
  */
 export function cardShadow(isDark: boolean): CardShadowValue {
-  if (isDark) {
-    return { radius: 0, color: '#00000000', offsetX: 0, offsetY: 0 };
-  }
-  return { radius: 12, color: LIGHT_PALETTE.shadow, offsetX: 0, offsetY: 4 };
+  return { radius: 0, color: '#00000000', offsetX: 0, offsetY: 0 };
 }
 
-/** 卡片描边宽度统一收口：浅色 0（阴影已表达层次），深色 1vp */
+/** 卡片描边宽度统一收口（极简风：无描边，靠 divider 发丝线分层） */
 export function cardBorderWidth(isDark: boolean): number {
-  return isDark ? 1 : 0;
+  return 0;
 }

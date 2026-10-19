@@ -11,7 +11,7 @@ import { AppStorageKeys } from '../../constants/AppConstants';
 import { MonthTrendPoint } from '../../model/StatsModels';
 import { MoneyUtil } from '../../utils/MoneyUtil';
 import { DateUtil } from '../../utils/DateUtil';
-import { AnimTicket, animProgress, dp2px, niceMax } from './ChartCanvasBase';
+import { AnimTicket, animProgress, canvasPxPerVp, niceMax } from './ChartCanvasBase';
 
 @Component
 export struct BarChart {
@@ -32,6 +32,13 @@ export struct BarChart {
   /** 点击选中的月份下标（-1 未选中） */
   @State private selectedIndex: number = -1;
   private ticket: AnimTicket | null = null;
+  /** 组件实测宽度（vp，onAreaChange 写入）：自推导画布比例尺用 */
+  private areaWidthVp: number = 0;
+
+  /** vp → 画布 px：用实测组件宽推导比例尺（规避 display 密度不一致环境的坐标错位） */
+  private vpx(dp: number): number {
+    return dp * canvasPxPerVp(this.ctx.width, this.areaWidthVp);
+  }
 
   aboutToAppear(): void {
     if (this.animate) {
@@ -64,11 +71,19 @@ export struct BarChart {
       .onReady(() => {
         this.draw();
       })
+      // 尺寸变化（Tabs 切换 / 首次布局 / 旋转）后按新尺寸重绘，保证图表始终铺满容器
+      .onAreaChange((oldArea: Area, newArea: Area) => {
+        const w: number = Number(newArea.width);
+        if (w > 0 && w !== this.areaWidthVp) {
+          this.areaWidthVp = w;
+          this.draw();
+        }
+      })
       .gesture(TapGesture({ fingers: 1 })
         .onAction((event: GestureEvent) => {
           if (event !== undefined && event.fingerList.length > 0) {
             const finger: FingerInfo = event.fingerList[0];
-            this.pickNearest(dp2px(finger.localX));
+            this.pickNearest(this.vpx(finger.localX));
           }
         }))
   }
@@ -92,10 +107,10 @@ export struct BarChart {
     }
     ctx.clearRect(0, 0, width, height);
 
-    const padLeft: number = dp2px(44);
-    const padRight: number = dp2px(10);
-    const padTop: number = dp2px(12);
-    const padBottom: number = dp2px(22);
+    const padLeft: number = this.vpx(44);
+    const padRight: number = this.vpx(10);
+    const padTop: number = this.vpx(12);
+    const padBottom: number = this.vpx(22);
     const plotWidth: number = width - padLeft - padRight;
     const plotHeight: number = height - padTop - padBottom;
     if (plotWidth <= 0 || plotHeight <= 0) {
@@ -109,11 +124,11 @@ export struct BarChart {
     }
     const yMax: number = niceMax(maxValue);
 
-    // 网格与 Y 轴刻度（4 等分）
+    // 网格与 Y 轴刻度（4 等分）；全零数据时 Y 轴只标 0，不画无意义刻度
     ctx.strokeStyle = palette(this.isDark).chartGrid;
     ctx.lineWidth = 1;
     ctx.fillStyle = palette(this.isDark).chartAxis;
-    ctx.font = dp2px(10).toString() + 'px sans-serif';
+    ctx.font = this.vpx(10).toString() + 'px sans-serif';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
     for (let g = 0; g <= 4; g++) {
@@ -122,8 +137,12 @@ export struct BarChart {
       ctx.moveTo(padLeft, gy);
       ctx.lineTo(width - padRight, gy);
       ctx.stroke();
-      const labelFen: number = Math.round(yMax * (4 - g) / 4);
-      ctx.fillText(this.shortAmount(labelFen), padLeft - dp2px(6), gy);
+      if (maxValue > 0) {
+        const labelFen: number = Math.round(yMax * (4 - g) / 4);
+        ctx.fillText(this.shortAmount(labelFen), padLeft - this.vpx(6), gy);
+      } else if (g === 4) {
+        ctx.fillText('0', padLeft - this.vpx(6), gy);
+      }
     }
 
     // X 轴月份标签（每柱组中心）
@@ -136,7 +155,7 @@ export struct BarChart {
       const cx: number = this.slotCenter(i, padLeft, slotWidth);
       const mm: string = this.points[i].month.substring(5);
       const monthNum: string = mm.charAt(0) === '0' ? mm.substring(1) : mm;
-      ctx.fillText(monthNum + monthSuffix, cx, height - padBottom + dp2px(6));
+      ctx.fillText(monthNum + monthSuffix, cx, height - padBottom + this.vpx(6));
     }
     if (this.progress <= 0) {
       return;
@@ -144,7 +163,7 @@ export struct BarChart {
 
     // 双柱：支出/收入紧挨并排（gap=0，靠红/绿颜色区分）；组宽不超过槽位 80%，月份之间仍留空隙
     const gap: number = 0;
-    let barW: number = Math.min(slotWidth * 0.3, dp2px(18));
+    let barW: number = Math.min(slotWidth * 0.3, this.vpx(18));
     const maxGroupW: number = slotWidth * 0.8;
     if (barW * 2 > maxGroupW) {
       barW = maxGroupW / 2;
@@ -185,20 +204,20 @@ export struct BarChart {
     const y: number = yMax <= 0 ? padTop : padTop + plotHeight -
       (Math.max(point.income, point.expense) / yMax) * plotHeight;
 
-    const bw: number = dp2px(112);
-    const bh: number = dp2px(52);
+    const bw: number = this.vpx(112);
+    const bh: number = this.vpx(52);
     let bx: number = x - bw / 2;
-    bx = Math.max(padLeft, Math.min(bx, this.ctx.width - bw - dp2px(4)));
-    let by: number = y - bh - dp2px(12);
+    bx = Math.max(padLeft, Math.min(bx, this.ctx.width - bw - this.vpx(4)));
+    let by: number = y - bh - this.vpx(12);
     if (by < padTop) {
-      by = y + dp2px(12);
+      by = y + this.vpx(12);
     }
 
     ctx.save();
     ctx.shadowColor = palette(this.isDark).shadow;
-    ctx.shadowBlur = dp2px(8);
+    ctx.shadowBlur = this.vpx(8);
     ctx.fillStyle = palette(this.isDark).bgElevated;
-    const r: number = dp2px(8);
+    const r: number = this.vpx(8);
     ctx.beginPath();
     ctx.moveTo(bx + r, by);
     ctx.arcTo(bx + bw, by, bx + bw, by + bh, r);
@@ -210,16 +229,16 @@ export struct BarChart {
     ctx.restore();
 
     ctx.fillStyle = palette(this.isDark).textPrimary;
-    ctx.font = 'bold ' + dp2px(11).toString() + 'px sans-serif';
+    ctx.font = 'bold ' + this.vpx(11).toString() + 'px sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     const monthLabel: string = DateUtil.monthLabel(DateUtil.monthKeyToStart(point.month));
-    ctx.fillText(monthLabel, bx + dp2px(10), by + dp2px(8));
-    ctx.font = dp2px(10).toString() + 'px sans-serif';
+    ctx.fillText(monthLabel, bx + this.vpx(10), by + this.vpx(8));
+    ctx.font = this.vpx(10).toString() + 'px sans-serif';
     ctx.fillStyle = palette(this.isDark).expense;
-    ctx.fillText(MoneyUtil.display(point.expense), bx + dp2px(10), by + dp2px(24));
+    ctx.fillText(MoneyUtil.display(point.expense), bx + this.vpx(10), by + this.vpx(24));
     ctx.fillStyle = palette(this.isDark).income;
-    ctx.fillText(MoneyUtil.display(point.income), bx + dp2px(58), by + dp2px(24));
+    ctx.fillText(MoneyUtil.display(point.income), bx + this.vpx(58), by + this.vpx(24));
   }
 
   /** 点击：取最近柱组 */
@@ -228,8 +247,8 @@ export struct BarChart {
       return;
     }
     const width: number = this.ctx.width;
-    const padLeft: number = dp2px(44);
-    const padRight: number = dp2px(10);
+    const padLeft: number = this.vpx(44);
+    const padRight: number = this.vpx(10);
     const plotWidth: number = width - padLeft - padRight;
     const slotWidth: number = plotWidth / this.points.length;
     let best: number = 0;

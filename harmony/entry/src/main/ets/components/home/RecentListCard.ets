@@ -25,8 +25,8 @@ export struct RecentListCard {
     Column({ space: 4 }) {
       Row() {
         Text($r('app.string.home_recent_title'))
-          .fontSize($r('app.float.font_title'))
-          .fontWeight(FontWeight.Medium)
+          .fontSize($r('app.float.font_subtitle'))
+          .fontWeight(FontWeight.Bold)
           .fontColor(palette(this.isDark).textPrimary)
           .layoutWeight(1)
 
@@ -34,9 +34,9 @@ export struct RecentListCard {
           Text($r('app.string.home_view_all'))
             .fontSize($r('app.float.font_aux'))
             .fontColor(palette(this.isDark).textSecondary)
-          Text('›')
-            .fontSize($r('app.float.font_title'))
-            .fontColor(palette(this.isDark).textTertiary)
+          SymbolGlyph($r('sys.symbol.chevron_right'))
+            .fontSize(14)
+            .fontColor([palette(this.isDark).textTertiary])
         }
         .padding({ left: 8, right: 4, top: 4, bottom: 4 })
         .onClick(() => {
@@ -46,7 +46,7 @@ export struct RecentListCard {
         })
       }
       .width('100%')
-      .padding({ bottom: 4 })
+      .padding({ bottom: 8 })
 
       if (this.items.length === 0) {
         EmptyState({ title: $r('app.string.home_empty_recent') })

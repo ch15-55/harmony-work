@@ -93,12 +93,11 @@ export struct LedgerSwitcher {
         .margin({ top: 8, bottom: 4 })
 
       Row({ space: 12 }) {
-        Text('＋')
+        SymbolGlyph($r('sys.symbol.plus'))
           .fontSize(18)
-          .fontColor(palette(this.isDark).primary)
+          .fontColor([palette(this.isDark).primary])
           .width(36)
           .height(36)
-          .textAlign(TextAlign.Center)
         Text($r('app.string.ledger_create_action'))
           .fontSize($r('app.float.font_body'))
           .fontColor(palette(this.isDark).primary)
@@ -134,19 +133,16 @@ export struct LedgerSwitcher {
   build() {
     Column() {
       Row({ space: 4 }) {
-        SymbolGlyph($r('sys.symbol.book'))
-          .fontSize(18)
-          .fontColor([palette(this.isDark).textPrimary])
         Text(this.ledgerName)
           .fontSize($r('app.float.font_title'))
-          .fontWeight(FontWeight.Medium)
+          .fontWeight(FontWeight.Bold)
           .fontColor(palette(this.isDark).textPrimary)
           .maxLines(1)
           .maxFontSize($r('app.float.font_title'))
           .minFontSize($r('app.float.font_body'))
-        Text('▾')
-          .fontSize($r('app.float.font_aux'))
-          .fontColor(palette(this.isDark).textSecondary)
+        SymbolGlyph($r('sys.symbol.chevron_down'))
+          .fontSize(14)
+          .fontColor([palette(this.isDark).textSecondary])
       }
       .padding({ left: 8, right: 8, top: 4, bottom: 4 })
       .borderRadius($r('app.float.radius_tag'))

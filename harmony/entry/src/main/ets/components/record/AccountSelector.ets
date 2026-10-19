@@ -28,6 +28,11 @@ export struct AccountSelector {
   @Prop selectedId: number = 0;
   /** 左侧标签文案（「账户」/「转出」/「转入」） */
   @Prop labelRes: Resource = $r('app.string.record_account_label');
+  /**
+   * 极简模式：去除自身卡片底色/圆角/左右内边距，融入外层分组卡片，
+   * 由外层卡片统一提供背景与分隔线。默认 false 保持独立卡片外观。
+   */
+  @Prop plain: boolean = false;
   /** 选中回调 */
   onSelected?: (accountId: number) => void;
   /** sheet 显隐（$$ 双向绑定 bindSheet） */
@@ -77,9 +82,11 @@ export struct AccountSelector {
     }
     .width('100%')
     .height(48)
-    .padding({ left: $r('app.float.card_padding'), right: $r('app.float.card_padding') })
-    .borderRadius($r('app.float.radius_button'))
-    .backgroundColor(palette(this.isDark).bgElevated)
+    .padding(this.plain
+      ? { left: 0, right: 0 }
+      : { left: $r('app.float.card_padding'), right: $r('app.float.card_padding') })
+    .borderRadius(this.plain ? 0 : $r('app.float.radius_button'))
+    .backgroundColor(this.plain ? Color.Transparent : palette(this.isDark).bgElevated)
     .onClick(() => {
       this.sheetShow = true;
     })

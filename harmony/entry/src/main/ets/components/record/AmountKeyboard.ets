@@ -50,23 +50,13 @@ export struct AmountKeyboard {
   }
 
   build() {
-    Column({ space: 10 }) {
-      // 表达式回显（12+8 实时可见）
-      Text(this.expr.length > 0 ? this.expr : '0')
-        .fontSize($r('app.float.font_display'))
-        .fontWeight(FontWeight.Medium)
-        .fontColor(palette(this.isDark).textPrimary)
-        .fontFeature('"tnum" on')
-        .maxLines(1)
-        .width('100%')
-        .textAlign(TextAlign.End)
-        .padding({ right: 8 })
-
+    // 纯数字键盘：金额回显由页面顶部 hero 承担，键盘仅保留按键，极简无装饰
+    Column({ space: 8 }) {
       ForEach(AmountKeyboard.KEY_ROWS, (row: string[]) => {
-        Row({ space: 10 }) {
+        Row({ space: 8 }) {
           ForEach(row, (key: string) => {
             if (key === 'done') {
-              // 完成键：主色渐变，占 3 格醒目位置
+              // 完成键：实心类型色，占 3 格醒目位置
               Text($r('app.string.common_confirm'))
                 .fontSize($r('app.float.font_title'))
                 .fontWeight(FontWeight.Medium)
@@ -75,10 +65,7 @@ export struct AmountKeyboard {
                 .layoutWeight(3)
                 .height(52)
                 .borderRadius($r('app.float.radius_button'))
-                .linearGradient({
-                  angle: 135,
-                  colors: [[palette(this.isDark).gradStart, 0], [palette(this.isDark).gradEnd, 1]]
-                })
+                .backgroundColor(this.accentColor)
                 .onClick(() => {
                   this.tapDone();
                 })

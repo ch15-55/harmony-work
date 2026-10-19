@@ -26,7 +26,15 @@
     },
     {
       "name": "font_title",
-      "value": "17fp"
+      "value": "18fp"
+    },
+    {
+      "name": "font_title_xl",
+      "value": "22fp"
+    },
+    {
+      "name": "font_subtitle",
+      "value": "16fp"
     },
     {
       "name": "font_body",
@@ -47,6 +55,10 @@
     {
       "name": "font_display",
       "value": "34fp"
+    },
+    {
+      "name": "font_hero",
+      "value": "38fp"
     },
     {
       "name": "space_xs",

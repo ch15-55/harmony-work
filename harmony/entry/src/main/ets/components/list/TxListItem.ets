@@ -1,6 +1,6 @@
 /**
  * 模块职责：流水条目（架构 T04 list/TxListItem）。
- * - 左：分类色点（简洁化，无图标字形）；转账用主色
+ * - 左：分类淡色圆 + 系统矢量符号（与记账页同一图标语言）；转账用主色淡底双向箭头
  * - 中：分类名 + 副行（账户 · 备注 · 时间，空段自动剔除）
  * - 右：金额（收入 +绿 / 支出 红 / 转账 主色），金额文本统一 MoneyUtil
  * - 左滑编辑/删除：swipeAction 是 ListItem 的专属属性，无法挂在本组件根 Row 上，
@@ -12,6 +12,7 @@ import { AppStorageKeys, TxType } from '../../constants/AppConstants';
 import { TxDisplayItem } from '../../model/StatsModels';
 import { MoneyUtil } from '../../utils/MoneyUtil';
 import { DateUtil } from '../../utils/DateUtil';
+import { categorySymbolByName } from '../../constants/IconConstants';
 import { common } from '@kit.AbilityKit';
 
 /** 左滑操作按钮宽度（vp）：页面在 ListItem.swipeAction 中复用，保证视觉一致 */
@@ -40,13 +41,12 @@ export struct TxListItem {
     return this.item.categoryColor;
   }
 
-  /** 分类 badge 文字：取分类名/「转账」首字，无图标资源下以首字承载分类，识别度高于纯色点 */
-  private badgeLetter(): string {
-    const name: string = this.titleText();
-    if (name.length > 0) {
-      return name.charAt(0);
+  /** 分类符号图标：转账用双向箭头，其余按分类名查预置映射（自定义分类回退 more） */
+  private badgeSymbol(): Resource {
+    if (this.item.tx.type === TxType.TRANSFER) {
+      return $r('sys.symbol.arrow_left_arrow_right');
     }
-    return '·';
+    return categorySymbolByName(this.item.categoryName);
   }
 
   /** 主标题（转账显示「转账」，其余分类名） */
@@ -101,17 +101,16 @@ export struct TxListItem {
 
   build() {
     Row({ space: 12 }) {
-      // 分类色圆形 badge + 首字（无图标资源下以首字承载分类，识别度高于纯色点）
+      // 中性灰圆 + 分类色符号（极简风：彩只落在图标上）
       Column() {
-        Text(this.badgeLetter())
-          .fontSize(16)
-          .fontWeight(FontWeight.Medium)
-          .fontColor('#FFFFFF')
+        SymbolGlyph(this.badgeSymbol())
+          .fontSize(20)
+          .fontColor([this.blockColor()])
       }
       .width(40)
       .height(40)
       .borderRadius($r('app.float.radius_circle'))
-      .backgroundColor(this.blockColor())
+      .backgroundColor(palette(this.isDark).bgElevated)
       .justifyContent(FlexAlign.Center)
 
       // 分类 + 副行

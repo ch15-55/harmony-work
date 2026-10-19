@@ -27,13 +27,12 @@ export struct NavTitleBar {
       Row() {
       Row() {
         if (this.showBack) {
-          Text('‹')
-            .fontSize(26)
-            .fontColor(palette(this.isDark).textPrimary)
+          SymbolGlyph($r('sys.symbol.chevron_left'))
+            .fontSize(24)
             .fontWeight(FontWeight.Medium)
-            .width(32)
-            .height(32)
-            .textAlign(TextAlign.Center)
+            .fontColor([palette(this.isDark).textPrimary])
+            .width(36)
+            .height(36)
             .onClick(() => {
               if (this.onBack !== undefined) {
                 this.onBack();
@@ -41,12 +40,12 @@ export struct NavTitleBar {
             })
         }
         Text(this.title)
-          .fontSize($r('app.float.font_title'))
-          .fontWeight(FontWeight.Medium)
+          .fontSize($r('app.float.font_title_xl'))
+          .fontWeight(FontWeight.Bold)
           .fontColor(palette(this.isDark).textPrimary)
           .maxLines(1)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
-          .margin({ left: this.showBack ? 4 : 0 })
+          .margin({ left: this.showBack ? 2 : 0 })
       }
       .layoutWeight(1)
       .alignItems(VerticalAlign.Center)
@@ -54,6 +53,7 @@ export struct NavTitleBar {
       if (this.actionText !== '') {
         Text(this.actionText)
           .fontSize($r('app.float.font_body'))
+          .fontWeight(FontWeight.Medium)
           .fontColor(palette(this.isDark).primary)
           .padding({ left: 12, right: 4, top: 6, bottom: 6 })
           .onClick(() => {
@@ -64,7 +64,7 @@ export struct NavTitleBar {
       }
     }
     .width('100%')
-    .height(48)
+    .height(52)
     .padding({ left: $r('app.float.page_padding'), right: $r('app.float.page_padding') })
     .alignItems(VerticalAlign.Center)
     }

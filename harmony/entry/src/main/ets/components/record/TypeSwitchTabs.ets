@@ -36,30 +36,26 @@ export struct TypeSwitchTabs {
     return $r('app.string.record_type_expense');
   }
 
-  /** 类型 → 强调色（选中胶囊填充色） */
+  /** 选中胶囊填充色（极简风：恒用主色黑，红绿仅留给金额语义） */
   private accentColor(txType: number): string {
-    if (txType === TxType.INCOME) {
-      return palette(this.isDark).income;
-    }
-    if (txType === TxType.TRANSFER) {
-      return palette(this.isDark).transfer;
-    }
-    return palette(this.isDark).expense;
+    return palette(this.isDark).primary;
   }
 
   build() {
-    Row({ space: 12 }) {
+    // 分段控制器：外轨道承载三个等宽选项，选中项填充类型色（数据驱动取自色板）
+    Row({ space: 4 }) {
       ForEach(this.typeOptions(), (txType: number) => {
         Text(this.labelRes(txType))
           .fontSize($r('app.float.font_body'))
           .fontWeight(txType === this.selected ? FontWeight.Medium : FontWeight.Normal)
           .fontColor(txType === this.selected ? '#FFFFFF' : palette(this.isDark).textSecondary)
           .textAlign(TextAlign.Center)
-          .padding({ left: 20, right: 20, top: 8, bottom: 8 })
-          .borderRadius($r('app.float.radius_button'))
+          .layoutWeight(1)
+          .height(38)
+          .borderRadius($r('app.float.radius_tag'))
           .backgroundColor(txType === this.selected
             ? this.accentColor(txType)
-            : palette(this.isDark).bgElevated)
+            : Color.Transparent)
           // 切换时填充色/字重平滑过渡（180ms EaseOut）
           .animation({ duration: 180, curve: Curve.EaseOut })
           .onClick(() => {
@@ -71,5 +67,8 @@ export struct TypeSwitchTabs {
     }
     .justifyContent(FlexAlign.Center)
     .width('100%')
+    .padding(4)
+    .backgroundColor(palette(this.isDark).bgElevated)
+    .borderRadius($r('app.float.radius_card_sm'))
   }
 }

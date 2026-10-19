@@ -12,6 +12,11 @@ export struct NoteInput {
   @StorageLink(AppStorageKeys.IS_DARK) isDark: boolean = false;
   /** 当前备注文本 */
   @Prop note: string = '';
+  /**
+   * 极简模式：输入框去除底色/圆角，融入外层分组卡片（行内编辑观感）。
+   * 默认 false 保持独立卡片外观。
+   */
+  @Prop plain: boolean = false;
   /** 输入回调 */
   onNoteChange?: (note: string) => void;
 
@@ -31,10 +36,10 @@ export struct NoteInput {
         .placeholderColor(palette(this.isDark).textTertiary)
         .placeholderFont({ size: 14 })
         .maxLength(AppConstants.MAX_NOTE_LENGTH)
-        .backgroundColor(palette(this.isDark).bgElevated)
-        .borderRadius($r('app.float.radius_button'))
+        .backgroundColor(this.plain ? Color.Transparent : palette(this.isDark).bgElevated)
+        .borderRadius(this.plain ? 0 : $r('app.float.radius_button'))
         .width('100%')
-        .height(44)
+        .height(this.plain ? 36 : 44)
         .onChange((value: string) => {
           if (this.onNoteChange !== undefined) {
             this.onNoteChange(value);

@@ -5,7 +5,7 @@
  * 键盘契约：onExprChange 回传完整表达式；onConfirm(fen) 触发保存。
  */
 import { router } from '@kit.ArkUI';
-import { palette } from '../constants/ThemeConstants';
+import { palette, cardShadow, cardBorderWidth } from '../constants/ThemeConstants';
 import { AppStorageKeys, AppConstants, TxType } from '../constants/AppConstants';
 import { RouteConstants } from '../constants/RouteConstants';
 import { RecordEditViewModel, RecordEditData } from '../viewmodel/RecordEditViewModel';
@@ -157,17 +157,46 @@ struct RecordEditPage {
     this.commit();
   }
 
+  /** 强调色（极简风：恒为主色黑，红绿仅出现在金额语义处） */
   private accent(): string {
+    return palette(this.isDark).primary;
+  }
+
+  /** 是否已选中具体分类（转账态无分类，恒 false） */
+  private hasSelectedCategory(): boolean {
+    if (this.data === null || this.data.type === TxType.TRANSFER) {
+      return false;
+    }
+    for (let i = 0; i < this.data.categories.length; i++) {
+      if (this.data.categories[i].id === this.data.selectedCategoryId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /** 当前选中分类名（未选返回空串） */
+  private selectedCategoryName(): string {
     if (this.data === null) {
-      return palette(this.isDark).primary;
+      return '';
     }
-    if (this.data.type === TxType.EXPENSE) {
-      return palette(this.isDark).expense;
+    for (let i = 0; i < this.data.categories.length; i++) {
+      if (this.data.categories[i].id === this.data.selectedCategoryId) {
+        return this.data.categories[i].name;
+      }
     }
-    if (this.data.type === TxType.INCOME) {
-      return palette(this.isDark).income;
+    return '';
+  }
+
+  /** 类型标签资源（未选分类时作为 hero 副标题） */
+  private typeLabelRes(): Resource {
+    if (this.data !== null && this.data.type === TxType.INCOME) {
+      return $r('app.string.record_type_income');
     }
-    return palette(this.isDark).transfer;
+    if (this.data !== null && this.data.type === TxType.TRANSFER) {
+      return $r('app.string.record_type_transfer');
+    }
+    return $r('app.string.record_type_expense');
   }
 
   /** 组装账户选择器入参 */
@@ -253,7 +282,7 @@ struct RecordEditPage {
           .onClick(() => { this.onClose(); })
         Text(this.editId > 0 ? $r('app.string.record_edit_title') : $r('app.string.page_record_edit_title'))
           .fontSize($r('app.float.font_title'))
-          .fontWeight(FontWeight.Medium)
+          .fontWeight(FontWeight.Bold)
           .fontColor(palette(this.isDark).textPrimary)
           .layoutWeight(1)
         Text($r('app.string.common_save'))
@@ -267,7 +296,7 @@ struct RecordEditPage {
         top: 12 + px2vp(this.statusBarHeightPx),
         bottom: 8,
         left: 12,
-        right: 16
+        right: 12
       })
 
       if (this.loading) {
@@ -290,43 +319,44 @@ struct RecordEditPage {
   @Builder
   private editor() {
     Column() {
-      // 支出/收入/转账 切换（编辑模式隐藏转账：Service 层禁止改转账，避免填完保存必报错）
+      // Hero：金额主展示 + 上下文副标题（选中分类名 / 类型），居中极简
+      Column({ space: 6 }) {
+        if (this.hasSelectedCategory()) {
+          Text(this.selectedCategoryName())
+            .fontSize($r('app.float.font_aux'))
+            .fontColor(palette(this.isDark).textSecondary)
+        } else {
+          Text(this.typeLabelRes())
+            .fontSize($r('app.float.font_aux'))
+            .fontColor(palette(this.isDark).textSecondary)
+        }
+        Text(this.data!.currency + (this.data!.expression.length > 0 ? this.data!.expression : '0'))
+          .fontSize($r('app.float.font_hero'))
+          .fontWeight(FontWeight.Bold)
+          .fontColor(this.accent())
+          .fontFeature('"tnum" on')
+          .maxLines(1)
+      }
+      .alignSelf(ItemAlign.Center)
+      .width('100%')
+      .padding({ top: 12, bottom: 16 })
+
+      // 支出/收入/转账 切换（分段控制器；编辑模式隐藏转账）
       TypeSwitchTabs({
         selected: this.data!.type,
         showTransfer: this.editId <= 0,
         onTypeChange: (txType: number): void => { this.onTypeChange(txType); }
       })
-        .margin({ top: 4, bottom: 8 })
-
-      // 金额大字
-      Text(this.data!.currency + (this.data!.expression.length > 0 ? this.data!.expression : '0'))
-        .fontSize($r('app.float.font_display'))
-        .fontWeight(FontWeight.Medium)
-        .fontColor(this.accent())
-        .fontFeature('"tnum" on')
-        .alignSelf(ItemAlign.End)
-        .margin({ right: 4, top: 4, bottom: 8 })
+        .margin({ top: 4, bottom: 12 })
 
       Scroll() {
         Column({ space: 12 }) {
-          // 转账态：隐藏分类，显示从账户/到账户
-          if (this.data!.type === TxType.TRANSFER) {
-            AccountSelector({
-              options: this.accountOptions(),
-              selectedId: this.data!.selectedAccountId,
-              labelRes: $r('app.string.record_from_account'),
-              onSelected: (id: number): void => { this.onSelectFrom(id); }
-            })
-            AccountSelector({
-              options: this.accountOptions(),
-              selectedId: this.data!.toAccountId,
-              labelRes: $r('app.string.record_to_account'),
-              onSelected: (id: number): void => { this.onSelectTo(id); }
-            })
-          } else {
+          // 非转账态：分类宫格为一级交互
+          if (this.data!.type !== TxType.TRANSFER) {
             CategoryGrid({
               categories: this.data!.categories,
               selectedId: this.data!.selectedCategoryId,
+              accentColor: this.accent(),
               onSelect: (id: number): void => { this.onSelectCategory(id); },
               onMore: (): void => {
                 router.pushUrl({ url: RouteConstants.CATEGORY_MANAGE })
@@ -335,31 +365,17 @@ struct RecordEditPage {
                   });
               }
             })
-            AccountSelector({
-              options: this.accountOptions(),
-              selectedId: this.data!.selectedAccountId,
-              labelRes: $r('app.string.record_account_label'),
-              onSelected: (id: number): void => { this.onSelectFrom(id); }
-            })
           }
-
-          DateSelector({
-            txDate: this.data!.txDate,
-            allowFuture: false,
-            onDateChange: (ts: number): void => { this.onDateChange(ts); }
-          })
-
-          NoteInput({
-            note: this.data!.note,
-            onNoteChange: (note: string): void => { this.onNoteChange(note); }
-          })
+          // 账户/日期/备注 收口为单张分组卡片（极简分隔线）
+          this.detailCard()
         }
-        .padding({ left: 4, right: 4, top: 4, bottom: 8 })
+        .width('100%')
+        .padding({ top: 4, bottom: 8 })
       }
       .layoutWeight(1)
       .scrollBar(BarState.Off)
 
-      // 自绘计算器键盘（padding-bottom 避让手势条）
+      // 自绘计算器键盘：纯按键，金额回显在上方 hero（padding-bottom 避让手势条）
       AmountKeyboard({
         accentColor: this.accent(),
         resetToken: this.resetToken,
@@ -375,5 +391,67 @@ struct RecordEditPage {
     }
     .width('100%')
     .layoutWeight(1)
+    .padding({ left: 12, right: 12 })
+  }
+
+  /**
+   * 账户/日期/备注 分组卡片：三行收口进一张卡片，行间以极简分隔线区隔，
+   * 替代原先各自独立的小卡片，视觉更干净、层级更清晰。
+   */
+  @Builder
+  private detailCard() {
+    Column() {
+      if (this.data!.type === TxType.TRANSFER) {
+        AccountSelector({
+          options: this.accountOptions(),
+          selectedId: this.data!.selectedAccountId,
+          labelRes: $r('app.string.record_from_account'),
+          plain: true,
+          onSelected: (id: number): void => { this.onSelectFrom(id); }
+        })
+        Divider()
+          .color(palette(this.isDark).divider)
+          .strokeWidth(1)
+        AccountSelector({
+          options: this.accountOptions(),
+          selectedId: this.data!.toAccountId,
+          labelRes: $r('app.string.record_to_account'),
+          plain: true,
+          onSelected: (id: number): void => { this.onSelectTo(id); }
+        })
+      } else {
+        AccountSelector({
+          options: this.accountOptions(),
+          selectedId: this.data!.selectedAccountId,
+          labelRes: $r('app.string.record_account_label'),
+          plain: true,
+          onSelected: (id: number): void => { this.onSelectFrom(id); }
+        })
+      }
+      Divider()
+        .color(palette(this.isDark).divider)
+        .strokeWidth(1)
+      DateSelector({
+        txDate: this.data!.txDate,
+        allowFuture: false,
+        plain: true,
+        onDateChange: (ts: number): void => { this.onDateChange(ts); }
+      })
+      Divider()
+        .color(palette(this.isDark).divider)
+        .strokeWidth(1)
+      NoteInput({
+        note: this.data!.note,
+        plain: true,
+        onNoteChange: (note: string): void => { this.onNoteChange(note); }
+      })
+    }
+    .width('100%')
+    .padding($r('app.float.card_padding'))
+    .backgroundColor(palette(this.isDark).bgCard)
+    .borderRadius($r('app.float.radius_card'))
+    .borderWidth(cardBorderWidth(this.isDark))
+    .borderColor(palette(this.isDark).border)
+    .shadow(cardShadow(this.isDark))
   }
 }

@@ -21,6 +21,19 @@ export function dp2px(dp: number): number {
   return dp * density;
 }
 
+/**
+ * 画布比例尺（px per vp）：由画布 px 宽与组件实测 vp 宽推算。
+ * 规避 display 密度与画布实际像素缩放不一致的环境（预览器/模拟器/异常密度），
+ * 使 padding、字号等 vp 常量在任意环境都映射到正确像素坐标。
+ */
+export function canvasPxPerVp(ctxWidthPx: number, componentWidthVp: number): number {
+  if (componentWidthVp > 0 && ctxWidthPx > 0) {
+    return ctxWidthPx / componentWidthVp;
+  }
+  const density: number = display.getDefaultDisplaySync().densityPixels;
+  return density > 0 ? density : 1;
+}
+
 /** px → dp（手势命中坐标换算） */
 export function px2dp(px: number): number {
   const density: number = display.getDefaultDisplaySync().densityPixels;

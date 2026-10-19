@@ -9,7 +9,7 @@
 import { palette } from '../../constants/ThemeConstants';
 import { AppStorageKeys } from '../../constants/AppConstants';
 import { CategorySlice } from '../../model/StatsModels';
-import { AnimTicket, animProgress, dp2px } from './ChartCanvasBase';
+import { AnimTicket, animProgress, canvasPxPerVp } from './ChartCanvasBase';
 
 @Component
 export struct DonutChart {
@@ -41,6 +41,13 @@ export struct DonutChart {
   /** 入场进度 0~1 */
   @State private progress: number = 0;
   private ticket: AnimTicket | null = null;
+  /** 组件实测宽度（vp，onAreaChange 写入）：自推导画布比例尺用 */
+  private areaWidthVp: number = 0;
+
+  /** vp → 画布 px：用实测组件宽推导比例尺（规避 display 密度不一致环境的坐标错位） */
+  private vpx(dp: number): number {
+    return dp * canvasPxPerVp(this.ctx.width, this.areaWidthVp);
+  }
 
   aboutToAppear(): void {
     if (this.animate) {
@@ -75,11 +82,19 @@ export struct DonutChart {
         .onReady(() => {
           this.draw();
         })
+        // 尺寸变化后按新尺寸重绘（首次布局 / 容器尺寸变化），避免停留在旧坐标系
+        .onAreaChange((oldArea: Area, newArea: Area) => {
+          const w: number = Number(newArea.width);
+          if (w > 0 && w !== this.areaWidthVp) {
+            this.areaWidthVp = w;
+            this.draw();
+          }
+        })
         .gesture(TapGesture({ fingers: 1 })
           .onAction((event: GestureEvent) => {
             if (event !== undefined && event.fingerList.length > 0) {
               const finger: FingerInfo = event.fingerList[0];
-              this.hitTest(dp2px(finger.localX), dp2px(finger.localY));
+              this.hitTest(this.vpx(finger.localX), this.vpx(finger.localY));
             }
           }))
 
@@ -182,7 +197,7 @@ export struct DonutChart {
 
   /** 环外半径（draw / hitTest 共用） */
   private outerRadius(width: number, height: number): number {
-    return Math.min(width, height) / 2 - dp2px(6);
+    return Math.min(width, height) / 2 - this.vpx(6);
   }
 
   /** 环厚度（与外半径同源，保证内径推算与扇区绘制一致） */

@@ -10,6 +10,8 @@
  * 待设计侧产出 PNG 后，仅需将 glyphMap 的取值替换为 $r('app.media.xxx')
  * 并把返回类型改为 Resource，业务代码零改动。
  */
+import { EXPENSE_CATEGORY_PRESETS, INCOME_CATEGORY_PRESETS } from './CategoryPresets';
+
 export class IconConstants {
 
   /** 图标键 → 兜底字符映射（覆盖 17 个预置分类 + 6 类账户 + 通用） */
@@ -83,4 +85,74 @@ export class IconConstants {
   static hasIcon(iconKey: string): boolean {
     return IconConstants.GLYPH_MAP.has(iconKey);
   }
+}
+
+/**
+ * 分类图标键 → 系统矢量符号（HM Symbol）映射。
+ * 相比位图：零资源体积、随深浅色主题着色、任意缩放不糊。
+ * 符号名均已核对 SDK 符号表（sysResource symbol 段），未知键回退 more。
+ * 仅覆盖 17 个预置分类键；账户/通用键不在分类宫格使用，暂不映射。
+ */
+export function categorySymbolRes(iconKey: string): Resource {
+  if (iconKey === 'ic_cat_food') {
+    return $r('sys.symbol.fork_knife');
+  }
+  if (iconKey === 'ic_cat_traffic') {
+    return $r('sys.symbol.car_fill');
+  }
+  if (iconKey === 'ic_cat_shop') {
+    return $r('sys.symbol.bag_fill');
+  }
+  if (iconKey === 'ic_cat_house') {
+    return $r('sys.symbol.house_fill');
+  }
+  if (iconKey === 'ic_cat_game') {
+    return $r('sys.symbol.gamecontroller');
+  }
+  if (iconKey === 'ic_cat_medical') {
+    return $r('sys.symbol.cross_case');
+  }
+  if (iconKey === 'ic_cat_edu') {
+    return $r('sys.symbol.graduationcap');
+  }
+  if (iconKey === 'ic_cat_gift') {
+    return $r('sys.symbol.gift_fill');
+  }
+  if (iconKey === 'ic_cat_phone') {
+    return $r('sys.symbol.phone_fill');
+  }
+  if (iconKey === 'ic_cat_daily') {
+    return $r('sys.symbol.basket');
+  }
+  if (iconKey === 'ic_cat_salary') {
+    return $r('sys.symbol.wallet');
+  }
+  if (iconKey === 'ic_cat_parttime') {
+    return $r('sys.symbol.briefcase');
+  }
+  if (iconKey === 'ic_cat_interest') {
+    return $r('sys.symbol.coins');
+  }
+  if (iconKey === 'ic_cat_redpacket') {
+    return $r('sys.symbol.envelope');
+  }
+  if (iconKey === 'ic_cat_reimburse') {
+    return $r('sys.symbol.doc_text');
+  }
+  // 「更多」与未知/自定义分类的统一兜底
+  return $r('sys.symbol.more');
+}
+
+/**
+ * 按分类名查系统符号（列表条目用：数据库流水只带分类名，icon 键不入库）。
+ * 预置分类按名精确匹配；自定义分类回退 more。
+ */
+export function categorySymbolByName(categoryName: string): Resource {
+  const presets = EXPENSE_CATEGORY_PRESETS.concat(INCOME_CATEGORY_PRESETS);
+  for (let i = 0; i < presets.length; i++) {
+    if (presets[i].name === categoryName) {
+      return categorySymbolRes(presets[i].icon);
+    }
+  }
+  return categorySymbolRes('ic_cat_more');
 }

@@ -57,9 +57,9 @@ export struct SettingItem {
                 .maxLines(1)
                 .textOverflow({ overflow: TextOverflow.Ellipsis })
             }
-            Text('›')
-              .fontSize(18)
-              .fontColor(palette(this.isDark).textTertiary)
+            SymbolGlyph($r('sys.symbol.chevron_right'))
+              .fontSize(14)
+              .fontColor([palette(this.isDark).textTertiary])
           }
           .alignItems(VerticalAlign.Center)
         }
@@ -78,7 +78,7 @@ export struct SettingItem {
         Divider()
           .color(palette(this.isDark).divider)
           .strokeWidth(1)
-          .margin({ left: 56, right: 0 })
+          .margin({ left: 12, right: 0 })
       }
     }
     .width('100%')

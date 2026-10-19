@@ -1,7 +1,6 @@
 /**
  * 模块职责：月度收支结余卡（架构 T04 home/MonthSummaryCard）。
- * - 三列：本月支出 / 本月收入 / 结余（负数红色提示）
- * - 底部双色比例条：支出/收入占比（数据驱动取色板）；两者皆 0 时画灰条
+ * - 三列：本月支出 / 本月收入 / 结余（负数红色提示）；极简风：无图表装饰
  */
 import { palette, cardShadow, cardBorderWidth } from '../../constants/ThemeConstants';
 import { AppStorageKeys } from '../../constants/AppConstants';
@@ -16,26 +15,17 @@ export struct MonthSummaryCard {
   /** 月份标签（页面格式化传入，如「5月」） */
   @Prop monthLabel: string = '';
 
-  /** 支出占比（0~1；总收入+总支出为 0 时返回 -1 表示无数据） */
-  private expenseRatio(): number {
-    const total: number = this.summary.expense + this.summary.income;
-    if (total <= 0) {
-      return -1;
-    }
-    return this.summary.expense / total;
-  }
-
   /** 汇总金额字号随文本长度自适应。 */
   private amountFontSize(fen: number): number {
     const len: number = MoneyUtil.display(fen).length;
     if (len <= 8) {
-      return 22;
+      return 24;
     }
     if (len <= 10) {
-      return 18;
+      return 19;
     }
     if (len <= 12) {
-      return 14;
+      return 15;
     }
     if (len <= 15) {
       return 11;
@@ -93,8 +83,9 @@ export struct MonthSummaryCard {
       Row() {
         // 卡头只渲染月份标签：Resource 不能与 string 用 + 拼接，标签由页面按资源格式化后传入
         Text(this.monthLabel)
-          .fontSize($r('app.float.font_aux'))
-          .fontColor(palette(this.isDark).textSecondary)
+          .fontSize($r('app.float.font_body'))
+          .fontWeight(FontWeight.Bold)
+          .fontColor(palette(this.isDark).textPrimary)
       }
       .width('100%')
 
@@ -103,30 +94,6 @@ export struct MonthSummaryCard {
         this.summaryCell($r('app.string.list_month_income'), 'income')
         this.summaryCell($r('app.string.list_month_net'), 'net')
       }
-      .width('100%')
-
-      // 双色比例条
-      Row() {
-        if (this.expenseRatio() >= 0) {
-          Row()
-            .layoutWeight(Math.max(1, Math.round(this.expenseRatio() * 100)))
-            .height('100%')
-            .backgroundColor(palette(this.isDark).expense)
-          Row()
-            .layoutWeight(Math.max(1, 100 - Math.round(this.expenseRatio() * 100)))
-            .height('100%')
-            .backgroundColor(palette(this.isDark).income)
-        } else {
-          // 空数据：整条灰
-          Row()
-            .layoutWeight(1)
-            .height('100%')
-            .backgroundColor(palette(this.isDark).chartEmpty)
-        }
-      }
-      .height(5)
-      .borderRadius($r('app.float.radius_circle'))
-      .clip(true)
       .width('100%')
     }
     .alignItems(HorizontalAlign.Start)
