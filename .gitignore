@@ -1,0 +1,49 @@
+# Original release packages and compiled bytecode remain local.
+*.app
+*.hap
+*.hsp
+*.har
+*.abc
+__MACOSX/
+.DS_Store
+._*
+
+# IDE, dependencies, local build and device state.
+.idea/
+.hvigor/
+oh_modules/
+node_modules/
+build/
+dist/
+local.properties
+.workbuddy/
+*.iml
+__pycache__/
+*.py[cod]
+.venv/
+
+# Signing material and local secrets.
+signing/
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.pem
+*.key
+*.cer
+*.crt
+*.csr
+*.p7b
+.env
+.env.*
+!.env.example
+# Hvigor 工程配置含本机证书路径与签名口令，保留本机即可；仓库提交 build-profile.example.json5
+harmony/build-profile.json5
+
+# Real user data and diagnostic exports.
+local-data/
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.log

@@ -1,0 +1,12 @@
+* text=auto
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+*.png binary
+*.jpeg binary
+*.index binary
+*.abc binary
+# recovered/ 是原包逐字节证据，禁止换行归一化，保持与原包一致
+recovered/** -text

@@ -1,0 +1,265 @@
+{
+  "format_version": 1,
+  "scope": "package extraction and byte-string indicators; not source recovery",
+  "input": {
+    "name": "harmony-release-signed.app",
+    "size": 477593,
+    "sha256": "f6062813e4126d4f06f73baa59868666cc37ee79b425f72e005f46947de2186f"
+  },
+  "hap": {
+    "name": "entry-default.hap",
+    "size": 965789,
+    "sha256": "85d0eaf30ad4e079017e3aa6df95535bad788c41904db05f8c5411e3e887480d"
+  },
+  "application": {
+    "bundle_name": "com.lifeledger.app",
+    "version": "1.0.0",
+    "build_mode": "release",
+    "compile_sdk_version": "26.0.0.105",
+    "api_version": {
+      "compatible": 20,
+      "releaseType": "Release",
+      "target": 20
+    },
+    "device_types": [
+      "phone"
+    ],
+    "requested_permissions": []
+  },
+  "routes": [
+    "pages/PrivacyPage",
+    "pages/Index",
+    "pages/HomePage",
+    "pages/RecordsPage",
+    "pages/PlaceholderPage",
+    "pages/StatisticsPage",
+    "pages/MinePage",
+    "pages/RecordEditPage",
+    "pages/TransactionDetailPage",
+    "pages/CategoryTxListPage",
+    "pages/AccountManagePage",
+    "pages/AccountEditPage",
+    "pages/LedgerManagePage",
+    "pages/CategoryManagePage",
+    "pages/BudgetSettingPage",
+    "pages/ExportPage",
+    "pages/BackupPage",
+    "pages/DiagnosticsPage",
+    "pages/ThemeSettingPage",
+    "pages/AppLockSettingPage",
+    "pages/PinVerifyPage",
+    "pages/AboutPage",
+    "pages/PrivacyPolicyPage",
+    "pages/UserAgreementPage"
+  ],
+  "bytecode_indicators": {
+    "module_paths": [
+      "entry/src/main/ets/ability/EntryAbility",
+      "entry/src/main/ets/components/chart/BarChart",
+      "entry/src/main/ets/components/chart/BarRankList",
+      "entry/src/main/ets/components/chart/ChartCanvasBase",
+      "entry/src/main/ets/components/chart/DonutChart",
+      "entry/src/main/ets/components/common/AmountText",
+      "entry/src/main/ets/components/common/CardContainer",
+      "entry/src/main/ets/components/common/ConfirmDialog",
+      "entry/src/main/ets/components/common/EmptyState",
+      "entry/src/main/ets/components/common/ErrorState",
+      "entry/src/main/ets/components/common/InputDialog",
+      "entry/src/main/ets/components/common/LoadingState",
+      "entry/src/main/ets/components/common/NavTitleBar",
+      "entry/src/main/ets/components/common/PinLockOverlay",
+      "entry/src/main/ets/components/common/SettingItem",
+      "entry/src/main/ets/components/home/AssetCard",
+      "entry/src/main/ets/components/home/BudgetProgressCard",
+      "entry/src/main/ets/components/home/LedgerSwitcher",
+      "entry/src/main/ets/components/home/MonthSummaryCard",
+      "entry/src/main/ets/components/home/RecentListCard",
+      "entry/src/main/ets/components/list/MonthSwitcher",
+      "entry/src/main/ets/components/list/SearchBar",
+      "entry/src/main/ets/components/list/TxDayGroupHeader",
+      "entry/src/main/ets/components/list/TxListItem",
+      "entry/src/main/ets/components/record/AccountSelector",
+      "entry/src/main/ets/components/record/AmountKeyboard",
+      "entry/src/main/ets/components/record/CategoryGrid",
+      "entry/src/main/ets/components/record/DateSelector",
+      "entry/src/main/ets/components/record/NoteInput",
+      "entry/src/main/ets/components/record/TypeSwitchTabs",
+      "entry/src/main/ets/constants/AccountPresets",
+      "entry/src/main/ets/constants/AppConstants",
+      "entry/src/main/ets/constants/CategoryPresets",
+      "entry/src/main/ets/constants/ErrorMessages",
+      "entry/src/main/ets/constants/IconConstants",
+      "entry/src/main/ets/constants/RouteConstants",
+      "entry/src/main/ets/constants/ThemeConstants",
+      "entry/src/main/ets/model/Account",
+      "entry/src/main/ets/model/AppSettings",
+      "entry/src/main/ets/model/Budget",
+      "entry/src/main/ets/model/Category",
+      "entry/src/main/ets/model/Ledger",
+      "entry/src/main/ets/model/StatsModels",
+      "entry/src/main/ets/model/Transaction",
+      "entry/src/main/ets/model/TxFilter",
+      "entry/src/main/ets/pages/AboutPage",
+      "entry/src/main/ets/pages/AccountEditPage",
+      "entry/src/main/ets/pages/AccountManagePage",
+      "entry/src/main/ets/pages/AppLockSettingPage",
+      "entry/src/main/ets/pages/BackupPage",
+      "entry/src/main/ets/pages/BudgetSettingPage",
+      "entry/src/main/ets/pages/CategoryManagePage",
+      "entry/src/main/ets/pages/CategoryTxListPage",
+      "entry/src/main/ets/pages/DiagnosticsPage",
+      "entry/src/main/ets/pages/ExportPage",
+      "entry/src/main/ets/pages/HomePage",
+      "entry/src/main/ets/pages/Index",
+      "entry/src/main/ets/pages/LedgerManagePage",
+      "entry/src/main/ets/pages/MinePage",
+      "entry/src/main/ets/pages/PinVerifyPage",
+      "entry/src/main/ets/pages/PlaceholderPage",
+      "entry/src/main/ets/pages/PrivacyPage",
+      "entry/src/main/ets/pages/PrivacyPolicyPage",
+      "entry/src/main/ets/pages/RecordEditPage",
+      "entry/src/main/ets/pages/RecordsPage",
+      "entry/src/main/ets/pages/StatisticsPage",
+      "entry/src/main/ets/pages/ThemeSettingPage",
+      "entry/src/main/ets/pages/TransactionDetailPage",
+      "entry/src/main/ets/pages/UserAgreementPage",
+      "entry/src/main/ets/service/AccountService",
+      "entry/src/main/ets/service/AppLockService",
+      "entry/src/main/ets/service/BackupService",
+      "entry/src/main/ets/service/BudgetService",
+      "entry/src/main/ets/service/CategoryService",
+      "entry/src/main/ets/service/DataBus",
+      "entry/src/main/ets/service/DatabaseManager",
+      "entry/src/main/ets/service/DiagnosticsService",
+      "entry/src/main/ets/service/ExportService",
+      "entry/src/main/ets/service/LedgerService",
+      "entry/src/main/ets/service/MigrationManager",
+      "entry/src/main/ets/service/SchemaConstants",
+      "entry/src/main/ets/service/SeedDataManager",
+      "entry/src/main/ets/service/SettingsService",
+      "entry/src/main/ets/service/StatsService",
+      "entry/src/main/ets/service/TransactionService",
+      "entry/src/main/ets/utils/CryptoUtil",
+      "entry/src/main/ets/utils/DateUtil",
+      "entry/src/main/ets/utils/ExpressionEvaluator",
+      "entry/src/main/ets/utils/FileUtil",
+      "entry/src/main/ets/utils/LazyDataSource",
+      "entry/src/main/ets/utils/LogUtil",
+      "entry/src/main/ets/utils/MoneyUtil",
+      "entry/src/main/ets/utils/ToastUtil",
+      "entry/src/main/ets/utils/WindowUtil",
+      "entry/src/main/ets/viewmodel/BackupViewModel",
+      "entry/src/main/ets/viewmodel/HomeViewModel",
+      "entry/src/main/ets/viewmodel/LedgerViewModel",
+      "entry/src/main/ets/viewmodel/MineViewModel",
+      "entry/src/main/ets/viewmodel/RecordEditViewModel",
+      "entry/src/main/ets/viewmodel/RecordsViewModel",
+      "entry/src/main/ets/viewmodel/StatsViewModel",
+      "entry/src/main/ets/viewmodel/ThemeStore",
+      "entry/src/main/ets/viewmodel/TxDisplayMapper"
+    ],
+    "module_counts_by_directory": {
+      "ability": 1,
+      "components": 29,
+      "constants": 7,
+      "model": 8,
+      "pages": 24,
+      "service": 16,
+      "utils": 9,
+      "viewmodel": 9
+    },
+    "table_names": [
+      "ll_account",
+      "ll_budget",
+      "ll_budget_item",
+      "ll_category",
+      "ll_ledger",
+      "ll_meta",
+      "ll_transaction"
+    ],
+    "strings_present": [
+      "@ohos:data.relationalStore",
+      "@ohos:data.preferences",
+      "@ohos:security.cryptoFramework",
+      "pinHash",
+      "pin_salt",
+      "SHA256",
+      "generateRandom",
+      "schemaVersion",
+      "CSV_BOM"
+    ],
+    "warning": "Names and strings do not prove runtime behavior or correctness."
+  },
+  "files": [
+    {
+      "path": "app/pac.json",
+      "size": 36,
+      "sha256": "63e01f330849458b7c74a160ba27b5933b1999a8d7acaa232787a5b31e0c87f2"
+    },
+    {
+      "path": "app/pack.info",
+      "size": 765,
+      "sha256": "2444f9ef2e17653cb9e99308fc764afda93892a33bc8ae71cb2b31714f04c4ce"
+    },
+    {
+      "path": "entry/ets/modules.abc",
+      "size": 774488,
+      "sha256": "ec6402daa79e5db7b808d92ccf4039c89868a2c554fd8adb575e8b4f79215f6d"
+    },
+    {
+      "path": "entry/module.json",
+      "size": 1395,
+      "sha256": "a3cf70514f4ed864a6995daf9ef41bec089c0ebfe40d0b1777ee73fe35b6ebdb"
+    },
+    {
+      "path": "entry/pack.info",
+      "size": 765,
+      "sha256": "2444f9ef2e17653cb9e99308fc764afda93892a33bc8ae71cb2b31714f04c4ce"
+    },
+    {
+      "path": "entry/pkgContextInfo.json",
+      "size": 136,
+      "sha256": "501d2f3a99fd4ad4d5acc83bc1307e2f79404828e1c2c435bada4ac3f60f9f89"
+    },
+    {
+      "path": "entry/resources.index",
+      "size": 29169,
+      "sha256": "7361e0e74982ca02af6709ba8c7e3d6ce0ab864162bcdbbbc4e0cf530ff23b40"
+    },
+    {
+      "path": "entry/resources/base/media/app_icon.png",
+      "size": 10556,
+      "sha256": "8797a09a90c97c55f541126c87024004cfc868c10bf129434edf6549751fbe4c"
+    },
+    {
+      "path": "entry/resources/base/media/app_icon_1024.png",
+      "size": 116002,
+      "sha256": "90c5b22a03aedf4cec2766041bb5d07b01ce1ebfcea6dadf7ebdc682681b7368"
+    },
+    {
+      "path": "entry/resources/base/media/app_icon_216.png",
+      "size": 19816,
+      "sha256": "76587dcf71f11b683aab41f1c75e25eaaa6a0af3bda6ac2cb152b6d70bfa9dcc"
+    },
+    {
+      "path": "entry/resources/base/media/app_icon_foreground.png",
+      "size": 3496,
+      "sha256": "00e727af162ccf4e73bc31789335e9b9d9a0f44a6bcded8ed5cb7bf46c5516d7"
+    },
+    {
+      "path": "entry/resources/base/profile/main_pages.json",
+      "size": 558,
+      "sha256": "5a6406e2c26822472b3d57d7dce693d218cae5955bc10dfb5664f164c186f6cf"
+    },
+    {
+      "path": "entry/resources/rawfile/agreement.md",
+      "size": 2594,
+      "sha256": "2c7aefb4f6a1204f6829f241244b157f96165e6bc43863726da979db4454b050"
+    },
+    {
+      "path": "entry/resources/rawfile/privacy.md",
+      "size": 5246,
+      "sha256": "5fdc1c53fc719e74dffd204f65ef8b85ab45b7876a475207a29ff080f1b96768"
+    }
+  ]
+}

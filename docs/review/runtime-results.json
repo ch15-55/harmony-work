@@ -1,0 +1,361 @@
+{
+  "date": "2026-10-18",
+  "timezone": "Asia/Shanghai",
+  "environment": {
+    "instance": "LifeLedgerAudit20261018",
+    "profile": "Pura 90",
+    "image": "HarmonyOS 6.1.1 / API 24",
+    "system_fullname": "OpenHarmony-6.1.1.125",
+    "resolution": [
+      1320,
+      2856
+    ],
+    "architecture": "x86_64",
+    "input_package_sha256": "f6062813e4126d4f06f73baa59868666cc37ee79b425f72e005f46947de2186f"
+  },
+  "application_changed": false,
+  "new_permissions_added": false,
+  "data_scope": "fresh isolated emulator; synthetic transactions only",
+  "counts": {
+    "passed": 26,
+    "failed": 5,
+    "blocked": 1,
+    "not_run": 5
+  },
+  "cases": [
+    {
+      "id": "T01",
+      "scenario": "安装与启动",
+      "status": "passed",
+      "observation": "原 HAP 安装成功，EntryAbility 启动成功。"
+    },
+    {
+      "id": "T02",
+      "scenario": "隐私拒绝",
+      "status": "passed",
+      "observation": "拒绝后退出到系统桌面；再次启动仍显示隐私页。"
+    },
+    {
+      "id": "T03",
+      "scenario": "隐私同意",
+      "status": "passed",
+      "observation": "同意后进入个人账本。"
+    },
+    {
+      "id": "T04",
+      "scenario": "新增支出",
+      "status": "passed",
+      "observation": "餐饮支出 12.34 元，现金余额为 -12.34 元。"
+    },
+    {
+      "id": "T05",
+      "scenario": "新增收入",
+      "status": "passed",
+      "observation": "工资收入 100 元，首页收入 100、支出 12.34、余额 87.66。"
+    },
+    {
+      "id": "T06",
+      "scenario": "编辑支出",
+      "status": "passed",
+      "observation": "详情编辑 12.34 为 20，保存后详情显示 -20.00；未单独截取编辑后的首页余额。"
+    },
+    {
+      "id": "T07",
+      "scenario": "删除支出",
+      "status": "passed",
+      "observation": "出现二次确认；确认删除后支出为 0，余额与结余为 100。"
+    },
+    {
+      "id": "T08",
+      "scenario": "分位累加",
+      "status": "passed",
+      "observation": "两笔 0.01 元支出汇总为 0.02，余额 99.98。"
+    },
+    {
+      "id": "T09",
+      "scenario": "小数位限制",
+      "status": "passed",
+      "observation": "键盘输入 0.019 时最终金额为 0.01，第三位小数被限制。"
+    },
+    {
+      "id": "T10",
+      "scenario": "统计对账",
+      "status": "passed",
+      "observation": "统计收入 100、支出 0.02、结余 99.98，餐饮占支出 100%。"
+    },
+    {
+      "id": "T11",
+      "scenario": "预算保存",
+      "status": "passed",
+      "observation": "收起键盘后可保存 200 元；首页及我的均显示相应预算。"
+    },
+    {
+      "id": "T12",
+      "scenario": "JSON 备份导出",
+      "status": "passed",
+      "observation": "系统文件选择器导出成功；JSON 可解析，包含 21 行业务数据。"
+    },
+    {
+      "id": "T13",
+      "scenario": "恢复取消",
+      "status": "passed",
+      "observation": "选择备份后出现覆盖警告，取消后原账目仍可操作。"
+    },
+    {
+      "id": "T14",
+      "scenario": "备份恢复闭环",
+      "status": "passed",
+      "observation": "删除备份后的唯一收入记录，再恢复；收入 100、余额 100 和预算 200 恢复。"
+    },
+    {
+      "id": "T15",
+      "scenario": "损坏 JSON",
+      "status": "passed",
+      "observation": "导入截断的 JSON 被拒绝，提示文件损坏或格式不正确。"
+    },
+    {
+      "id": "T16",
+      "scenario": "高版本备份",
+      "status": "passed",
+      "observation": "schema_version=999 被拒绝，提示先升级应用。"
+    },
+    {
+      "id": "T17",
+      "scenario": "错误关联备份",
+      "status": "passed",
+      "observation": "流水引用不存在账户 999999 被拒绝；三次失败后余额仍为 99.98，收入 100、支出 0.02。"
+    },
+    {
+      "id": "T18",
+      "scenario": "CSV 导出",
+      "status": "passed",
+      "observation": "导出成功 3 笔；实际文件含 UTF-8 BOM，可解析为表头加 3 条记录。金额为基准人民币，未验证复杂备注转义。"
+    },
+    {
+      "id": "T19",
+      "scenario": "进程重启持久化",
+      "status": "passed",
+      "observation": "强制停止并启动后，收入 100、支出 0.02、余额 99.98、预算 200 均保持。"
+    },
+    {
+      "id": "T20",
+      "scenario": "应用锁冷启动",
+      "status": "passed",
+      "observation": "设置四位测试 PIN 后强制停止并重启，显示密码锁。"
+    },
+    {
+      "id": "T21",
+      "scenario": "错误 PIN 拒绝",
+      "status": "passed",
+      "observation": "错误 PIN 没有解锁。"
+    },
+    {
+      "id": "T22",
+      "scenario": "正确 PIN 解锁",
+      "status": "passed",
+      "observation": "正确测试 PIN 成功解锁，账目仍保持。"
+    },
+    {
+      "id": "T23",
+      "scenario": "深色主题",
+      "status": "passed",
+      "observation": "切换深色后首页、卡片、底部导航呈现深色。"
+    },
+    {
+      "id": "T24",
+      "scenario": "手动汇率换算",
+      "status": "passed",
+      "observation": "默认手动汇率 7.2 下，99.98 元汇总显示 $13.89；没有测试新汇率写入。"
+    },
+    {
+      "id": "T25",
+      "scenario": "诊断隐私样本",
+      "status": "passed",
+      "observation": "导出的诊断可解析，样本不含账目明细、名称、PIN、PIN 哈希或盐。此为单一样本。"
+    },
+    {
+      "id": "T26",
+      "scenario": "已安装权限声明",
+      "status": "passed",
+      "observation": "bm dump 的 reqPermissions、applicationInfo.permissions、reqPermissionDetails 均为空。"
+    },
+    {
+      "id": "T27",
+      "scenario": "新增账户保存",
+      "status": "failed",
+      "observation": "标题与保存重叠状态栏；填写 ReviewBank 后点击保存所在区域未保存，返回仍仅有现金。参见 F01。"
+    },
+    {
+      "id": "T28",
+      "scenario": "预算键盘避让",
+      "status": "failed",
+      "observation": "键盘弹出后保存按钮由 147px 高裁到约 24px，文字被遮挡。参见 F02。"
+    },
+    {
+      "id": "T29",
+      "scenario": "预算百分比",
+      "status": "failed",
+      "observation": "预算 200、支出 0.02 时应为 0.01%，实际显示 1%。参见 F03。"
+    },
+    {
+      "id": "T30",
+      "scenario": "币种显示一致性",
+      "status": "failed",
+      "observation": "美元汇总显示 $13.89，但首页最近记录仍显示 ¥0.01；明细页已显示美元。参见 F04。"
+    },
+    {
+      "id": "T31",
+      "scenario": "PIN 错误重试限制",
+      "status": "failed",
+      "observation": "连续 10 次错误尝试后仍可立即输入正确 PIN 解锁，未观察到等待或锁定。参见 F05。"
+    },
+    {
+      "id": "T32",
+      "scenario": "双账户转账界面闭环",
+      "status": "blocked",
+      "observation": "新增账户保存被 F01 阻挡，未绕过界面直接写库；只完成转账相关 SQL 检查。"
+    },
+    {
+      "id": "T33",
+      "scenario": "多账本完整操作",
+      "status": "not_run",
+      "observation": "本轮未覆盖新建、切换与删除账本。"
+    },
+    {
+      "id": "T34",
+      "scenario": "旧版升级迁移",
+      "status": "not_run",
+      "observation": "没有旧版安装包和旧版数据库。"
+    },
+    {
+      "id": "T35",
+      "scenario": "大数据性能及耐久",
+      "status": "not_run",
+      "observation": "只使用少量合成数据，未做长时间、低内存和大列表压力测试。"
+    },
+    {
+      "id": "T36",
+      "scenario": "全链路网络验证",
+      "status": "not_run",
+      "observation": "未执行抓包或完整飞行模式回归；零权限及样本功能正常不等于全部网络行为已证明。"
+    },
+    {
+      "id": "T37",
+      "scenario": "多设备与无障碍",
+      "status": "not_run",
+      "observation": "未覆盖真机、小屏、折叠屏、大字号或第三方无障碍服务。"
+    }
+  ],
+  "export_artifacts": {
+    "backup.json": {
+      "size": 4711,
+      "sha256": "9cac5a664a5c86ef7d0daddca9a395227e797cde5e15a05c622ac7a90b86ab24"
+    },
+    "export.csv": {
+      "size": 271,
+      "sha256": "cf0352762470af5ad257a8a53acc1b7c6feb1ceaf4fbfb2d4b33fdc106c62610"
+    },
+    "diagnostics.json": {
+      "size": 1211,
+      "sha256": "5546dfcec4a8ffb1187ec80118b1002ab8099980960053ae951cbb18fa43a3bd"
+    }
+  },
+  "backup_sample_meta": {
+    "app": "lightledger",
+    "app_version": "1.0.0",
+    "schema_version": 1,
+    "exported_at": 1792322226656,
+    "row_counts": {
+      "ll_ledger": 1,
+      "ll_account": 1,
+      "ll_category": 17,
+      "ll_budget": 1,
+      "ll_budget_item": 0,
+      "ll_transaction": 1
+    },
+    "rows_total": 21
+  },
+  "csv_sample_rows": [
+    [
+      "日期",
+      "时间",
+      "类型",
+      "金额",
+      "分类",
+      "一级分类",
+      "账户",
+      "备注",
+      "账本"
+    ],
+    [
+      "2026-10-18",
+      "00:00",
+      "收入",
+      "+100.00",
+      "工资",
+      "工资",
+      "现金",
+      "",
+      "个人账本"
+    ],
+    [
+      "2026-10-18",
+      "00:00",
+      "支出",
+      "-0.01",
+      "餐饮",
+      "餐饮",
+      "现金",
+      "",
+      "个人账本"
+    ],
+    [
+      "2026-10-18",
+      "00:00",
+      "支出",
+      "-0.01",
+      "餐饮",
+      "餐饮",
+      "现金",
+      "",
+      "个人账本"
+    ]
+  ],
+  "diagnostic_sample": {
+    "top_level_keys": [
+      "app",
+      "appVersion",
+      "schemaVersion",
+      "exportedAt",
+      "databaseReady",
+      "databaseReadOnly",
+      "currentLedgerId",
+      "logs"
+    ],
+    "log_count": 15,
+    "empty_log_message_count": 15,
+    "databaseReady": true,
+    "databaseReadOnly": false,
+    "error_tags": [
+      "WindowUtil"
+    ]
+  },
+  "screenshots": [
+    "screenshots/account-edit.jpeg",
+    "screenshots/budget-keyboard.jpeg",
+    "screenshots/budget-small-percentage.jpeg",
+    "screenshots/dark-usd.jpeg",
+    "screenshots/detail.jpeg",
+    "screenshots/home-empty.jpeg",
+    "screenshots/invalid-backup.jpeg",
+    "screenshots/lock.jpeg",
+    "screenshots/restored-home.jpeg",
+    "screenshots/statistics.jpeg"
+  ],
+  "installed_permissions": {
+    "reqPermissions": [],
+    "reqPermissionDetails": [],
+    "reqPermissionStates": [],
+    "applicationInfo.permissions": []
+  }
+}
