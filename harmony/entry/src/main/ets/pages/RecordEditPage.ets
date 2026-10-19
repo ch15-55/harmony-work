@@ -34,6 +34,14 @@ export interface RecordEditParams {
 @Entry
 @Component
 struct RecordEditPage {
+  /** 页面转场：底部滑入，模态编辑感（v1.2 美化） */
+  pageTransition() {
+    PageTransitionEnter({ type: RouteType.Push, duration: 320, curve: Curve.EaseOut })
+      .slide(SlideEffect.Bottom)
+    PageTransitionExit({ type: RouteType.Pop, duration: 280, curve: Curve.EaseIn })
+      .slide(SlideEffect.Bottom)
+  }
+
   @StorageLink(AppStorageKeys.IS_DARK) isDark: boolean = false;
   /** 状态栏/导航条高度（px，WindowUtil 冷启动写入），沉浸式避让 */
   @StorageLink(AppStorageKeys.STATUS_BAR_HEIGHT_PX) statusBarHeightPx: number = 0;
@@ -292,7 +300,7 @@ struct RecordEditPage {
 
       // 金额大字
       Text(this.data!.currency + (this.data!.expression.length > 0 ? this.data!.expression : '0'))
-        .fontSize($r('app.float.font_amount_large'))
+        .fontSize($r('app.float.font_display'))
         .fontWeight(FontWeight.Medium)
         .fontColor(this.accent())
         .fontFeature('"tnum" on')

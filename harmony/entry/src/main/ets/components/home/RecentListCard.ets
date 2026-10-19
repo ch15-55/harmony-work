@@ -5,7 +5,7 @@
  *   编辑删除入口在明细页，避免双入口状态不同步）
  * - 空态：EmptyState（home_empty_recent 文案）
  */
-import { palette } from '../../constants/ThemeConstants';
+import { palette, cardShadow, cardBorderWidth } from '../../constants/ThemeConstants';
 import { AppStorageKeys } from '../../constants/AppConstants';
 import { TxDisplayItem } from '../../model/StatsModels';
 import { TxListItem } from '../list/TxListItem';
@@ -30,17 +30,23 @@ export struct RecentListCard {
           .fontColor(palette(this.isDark).textPrimary)
           .layoutWeight(1)
 
-        Text($r('app.string.home_view_all'))
-          .fontSize($r('app.float.font_aux'))
-          .fontColor(palette(this.isDark).textSecondary)
-          .onClick(() => {
-            if (this.onViewAll !== undefined) {
-              this.onViewAll();
-            }
-          })
+        Row({ space: 2 }) {
+          Text($r('app.string.home_view_all'))
+            .fontSize($r('app.float.font_aux'))
+            .fontColor(palette(this.isDark).textSecondary)
+          Text('›')
+            .fontSize($r('app.float.font_title'))
+            .fontColor(palette(this.isDark).textTertiary)
+        }
+        .padding({ left: 8, right: 4, top: 4, bottom: 4 })
+        .onClick(() => {
+          if (this.onViewAll !== undefined) {
+            this.onViewAll();
+          }
+        })
       }
       .width('100%')
-      .padding({ bottom: 8 })
+      .padding({ bottom: 4 })
 
       if (this.items.length === 0) {
         EmptyState({ title: $r('app.string.home_empty_recent') })
@@ -64,5 +70,8 @@ export struct RecentListCard {
     .padding($r('app.float.card_padding'))
     .borderRadius($r('app.float.radius_card'))
     .backgroundColor(palette(this.isDark).bgCard)
+    .borderWidth(cardBorderWidth(this.isDark))
+    .borderColor(palette(this.isDark).border)
+    .shadow(cardShadow(this.isDark))
   }
 }

@@ -10,7 +10,7 @@
  */
 import { router } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
-import { palette } from '../constants/ThemeConstants';
+import { palette, cardShadow, cardBorderWidth } from '../constants/ThemeConstants';
 import { AppConstants, AppStorageKeys, CategoryType } from '../constants/AppConstants';
 import { RouteConstants } from '../constants/RouteConstants';
 import { StatsData, StatsViewModel } from '../viewmodel/StatsViewModel';
@@ -349,6 +349,9 @@ export struct StatisticsPage {
     .padding($r('app.float.card_padding'))
     .borderRadius($r('app.float.radius_card'))
     .backgroundColor(palette(this.isDark).bgCard)
+    .borderWidth(cardBorderWidth(this.isDark))
+    .borderColor(palette(this.isDark).border)
+    .shadow(cardShadow(this.isDark))
   }
 
   /** 分类占比卡（环形图 + 图例，空数据走 EmptyState） */
@@ -412,6 +415,9 @@ export struct StatisticsPage {
     .padding($r('app.float.card_padding'))
     .borderRadius($r('app.float.radius_card'))
     .backgroundColor(palette(this.isDark).bgCard)
+    .borderWidth(cardBorderWidth(this.isDark))
+    .borderColor(palette(this.isDark).border)
+    .shadow(cardShadow(this.isDark))
   }
 
   /** 分类排行卡 */
@@ -436,6 +442,9 @@ export struct StatisticsPage {
     .padding($r('app.float.card_padding'))
     .borderRadius($r('app.float.radius_card'))
     .backgroundColor(palette(this.isDark).bgCard)
+    .borderWidth(cardBorderWidth(this.isDark))
+    .borderColor(palette(this.isDark).border)
+    .shadow(cardShadow(this.isDark))
   }
 
   /** 趋势卡（近 6 月收支双柱状图） */
@@ -469,6 +478,9 @@ export struct StatisticsPage {
     .padding($r('app.float.card_padding'))
     .borderRadius($r('app.float.radius_card'))
     .backgroundColor(palette(this.isDark).bgCard)
+    .borderWidth(cardBorderWidth(this.isDark))
+    .borderColor(palette(this.isDark).border)
+    .shadow(cardShadow(this.isDark))
   }
 
   /** 正文（滚动区） */

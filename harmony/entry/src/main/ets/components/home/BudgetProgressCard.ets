@@ -5,7 +5,7 @@
  * - 未设预算（total=0）：文案 + 「去设置」按钮回调 onGoSetting
  * - 展示：已用 / 剩余 / 日均可用（剩余天数由 StatsService 计算入 DTO）
  */
-import { palette } from '../../constants/ThemeConstants';
+import { palette, cardShadow, cardBorderWidth } from '../../constants/ThemeConstants';
 import { AppConstants, AppStorageKeys, BudgetLevel } from '../../constants/AppConstants';
 import { BudgetProgress, CategorySlice } from '../../model/StatsModels';
 import { MoneyUtil } from '../../utils/MoneyUtil';
@@ -92,7 +92,7 @@ export struct BudgetProgressCard {
             .fontColor(palette(this.isDark).primary)
             .padding({ left: 24, right: 24, top: 8, bottom: 8 })
             .borderRadius($r('app.float.radius_button'))
-            .border({ width: 1, color: palette(this.isDark).primary })
+            .backgroundColor(palette(this.isDark).primarySoft)
             .onClick(() => {
               if (this.onGoSetting !== undefined) {
                 this.onGoSetting();
@@ -158,5 +158,8 @@ export struct BudgetProgressCard {
     .padding($r('app.float.card_padding'))
     .borderRadius($r('app.float.radius_card'))
     .backgroundColor(palette(this.isDark).bgCard)
+    .borderWidth(cardBorderWidth(this.isDark))
+    .borderColor(palette(this.isDark).border)
+    .shadow(cardShadow(this.isDark))
   }
 }

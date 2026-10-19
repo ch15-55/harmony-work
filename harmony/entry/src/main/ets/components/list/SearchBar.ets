@@ -53,6 +53,7 @@ export struct SearchBar {
     Row({ space: 8 }) {
       SymbolGlyph($r('sys.symbol.magnifyingglass'))
         .fontSize(14)
+        .fontColor([palette(this.isDark).textSecondary])
       TextInput({ text: this.keyword, placeholder: $r('app.string.list_search_hint') })
         .fontSize($r('app.float.font_body'))
         .fontColor(palette(this.isDark).textPrimary)
@@ -85,7 +86,7 @@ export struct SearchBar {
       }
     }
     .width('100%')
-    .height(40)
+    .height(44)
     .padding({ left: 12, right: 8 })
     .borderRadius($r('app.float.radius_button'))
     .backgroundColor(palette(this.isDark).bgElevated)

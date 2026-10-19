@@ -7,7 +7,7 @@
  *   故由页面在 ListItem 上声明（宽度复用本文件导出的 SWIPE_BUTTON_WIDTH），
  *   本组件只负责条目内容与点击；swipeEnabled 保留给调用方标识是否可左滑。
  */
-import { palette } from '../../constants/ThemeConstants';
+import { palette, cardShadow, cardBorderWidth } from '../../constants/ThemeConstants';
 import { AppStorageKeys, TxType } from '../../constants/AppConstants';
 import { TxDisplayItem } from '../../model/StatsModels';
 import { MoneyUtil } from '../../utils/MoneyUtil';
@@ -146,9 +146,9 @@ export struct TxListItem {
     .padding(this.showCard ? { left: 12, right: 12, top: 12, bottom: 12 } : { left: 4, right: 4 })
     .backgroundColor(this.showCard ? palette(this.isDark).bgCard : '#00000000')
     .borderRadius(this.showCard ? $r('app.float.radius_card') : $r('app.float.radius_tag'))
-    .shadow(this.showCard
-      ? { radius: 8, color: palette(this.isDark).shadow, offsetX: 0, offsetY: 2 }
-      : { radius: 0, color: '#00000000' })
+    .borderWidth(this.showCard ? cardBorderWidth(this.isDark) : 0)
+    .borderColor(palette(this.isDark).border)
+    .shadow(this.showCard ? cardShadow(this.isDark) : { radius: 0, color: '#00000000', offsetY: 0 })
     .onClick(() => {
       if (this.onItemClick !== undefined) {
         this.onItemClick(this.item.tx.id);

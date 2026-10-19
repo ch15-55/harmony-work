@@ -4,7 +4,7 @@
  * 通过 @StorageLink('dataVersion') @Watch 自动刷新（删除/记账后）。
  */
 import { router } from '@kit.ArkUI';
-import { palette } from '../constants/ThemeConstants';
+import { palette, cardShadow, cardBorderWidth } from '../constants/ThemeConstants';
 import { AppStorageKeys, TxType } from '../constants/AppConstants';
 import { ErrorMessages } from '../constants/ErrorMessages';
 import { RouteConstants } from '../constants/RouteConstants';
@@ -239,7 +239,9 @@ export struct RecordsPage {
         .backgroundColor(palette(this.isDark).bgCard)
         .borderRadius($r('app.float.radius_card'))
         .padding({ top: 12, bottom: 12, left: 12, right: 12 })
-        .shadow({ radius: 8, color: palette(this.isDark).shadow, offsetX: 0, offsetY: 2 })
+        .borderWidth(cardBorderWidth(this.isDark))
+        .borderColor(palette(this.isDark).border)
+        .shadow(cardShadow(this.isDark))
         .margin({ bottom: 12 })
 
         SearchBar({

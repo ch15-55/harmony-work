@@ -53,7 +53,7 @@ export struct AmountKeyboard {
     Column({ space: 10 }) {
       // 表达式回显（12+8 实时可见）
       Text(this.expr.length > 0 ? this.expr : '0')
-        .fontSize($r('app.float.font_amount_large'))
+        .fontSize($r('app.float.font_display'))
         .fontWeight(FontWeight.Medium)
         .fontColor(palette(this.isDark).textPrimary)
         .fontFeature('"tnum" on')

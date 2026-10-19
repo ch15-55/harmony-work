@@ -3,7 +3,7 @@
  * - 三列：本月支出 / 本月收入 / 结余（负数红色提示）
  * - 底部双色比例条：支出/收入占比（数据驱动取色板）；两者皆 0 时画灰条
  */
-import { palette } from '../../constants/ThemeConstants';
+import { palette, cardShadow, cardBorderWidth } from '../../constants/ThemeConstants';
 import { AppStorageKeys } from '../../constants/AppConstants';
 import { MonthSummary } from '../../model/StatsModels';
 import { MoneyUtil } from '../../utils/MoneyUtil';
@@ -124,8 +124,8 @@ export struct MonthSummaryCard {
             .backgroundColor(palette(this.isDark).chartEmpty)
         }
       }
-      .height(4)
-      .borderRadius($r('app.float.radius_tag'))
+      .height(5)
+      .borderRadius($r('app.float.radius_circle'))
       .clip(true)
       .width('100%')
     }
@@ -134,5 +134,8 @@ export struct MonthSummaryCard {
     .padding($r('app.float.card_padding'))
     .borderRadius($r('app.float.radius_card'))
     .backgroundColor(palette(this.isDark).bgCard)
+    .borderWidth(cardBorderWidth(this.isDark))
+    .borderColor(palette(this.isDark).border)
+    .shadow(cardShadow(this.isDark))
   }
 }

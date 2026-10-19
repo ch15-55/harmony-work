@@ -3,7 +3,7 @@
  * 统一卡片视觉：圆角 16vp、浅色模式阴影 / 深色模式 1vp 描边替代阴影（PRD 5.1）。
  * 纯 UI 组件：只依赖色板，不调用 Service、不做路由。
  */
-import { palette } from '../../constants/ThemeConstants';
+import { palette, cardShadow, cardBorderWidth } from '../../constants/ThemeConstants';
 import { AppStorageKeys } from '../../constants/AppConstants';
 
 @Builder
@@ -35,13 +35,8 @@ export struct CardContainer {
     .padding(this.paddingValue)
     .backgroundColor(this.cardBg)
     .borderRadius($r('app.float.radius_card'))
-    .borderWidth(this.isDark ? 1 : 0)
+    .borderWidth(cardBorderWidth(this.isDark))
     .borderColor(palette(this.isDark).border)
-    .shadow(this.isDark ? { radius: 0, color: '#00000000', offsetY: 0 } :
-    {
-      radius: $r('app.float.card_shadow_radius'),
-      color: palette(this.isDark).shadow,
-      offsetY: 2
-    })
+    .shadow(cardShadow(this.isDark))
   }
 }

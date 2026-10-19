@@ -1,11 +1,12 @@
 /**
  * 模块职责：首页资产总览大卡（架构 T04 home/AssetCard）。
- * - 渐变主色背景，白色文字
- * - 总资产大字 + 信用卡欠款 / 净资产 两行明细
+ * - 渐变主色背景，白字
+ * - 总资产大字（font_display hero 数字）+ 信用卡欠款 / 净资产 两行明细
  * - 右上角眼睛：金额掩码切换（状态由页面持久化，本组件仅回调）
  * - 金额展示统一走 MoneyUtil（÷100 单点收口）
+ * - v1.2 美化：渐变卡文字色全部走色板（textOnGradient*），禁止组件内硬编码
  */
-import { palette } from '../../constants/ThemeConstants';
+import { palette, cardShadow } from '../../constants/ThemeConstants';
 import { AppStorageKeys } from '../../constants/AppConstants';
 import { NetAssetSummary } from '../../model/StatsModels';
 import { MoneyUtil } from '../../utils/MoneyUtil';
@@ -37,16 +38,16 @@ export struct AssetCard {
   }
 
   build() {
-    Column({ space: 12 }) {
+    Column({ space: 14 }) {
       Row() {
         Text($r('app.string.home_asset_total'))
-          .fontSize($r('app.float.font_body'))
-          .fontColor('#B3B9FF')
+          .fontSize($r('app.float.font_aux'))
+          .fontColor(palette(this.isDark).textOnGradientSecondary)
         // 眼睛：掩码切换（线条风格系统符号，隐藏态带斜杠）
         SymbolGlyph(this.hidden ? $r('sys.symbol.eye_slash') : $r('sys.symbol.eye'))
-          .fontSize(20)
-          .fontColor(['#B3B9FF'])
-          .padding({ left: 4, right: 4, top: 4, bottom: 4 })
+          .fontSize(22)
+          .fontColor([palette(this.isDark).textOnGradientSecondary])
+          .padding({ left: 8, right: 8, top: 6, bottom: 6 })
           .onClick(() => {
             if (this.onToggleHide !== undefined) {
               this.onToggleHide();
@@ -56,32 +57,46 @@ export struct AssetCard {
       .width('100%')
       .justifyContent(FlexAlign.SpaceBetween)
 
+      // hero 数字：总资产（34fp 展示级字号，等宽数字防跳动）
       Text(this.moneyText(this.summary.netAsset))
-        .fontSize($r('app.float.font_amount_large'))
+        .fontSize($r('app.float.font_display'))
         .fontWeight(FontWeight.Bold)
-        .fontColor('#FFFFFF')
+        .fontColor(palette(this.isDark).textOnGradient)
         .fontFeature('"tnum" on')
         .width('100%')
+        .margin({ top: -2 })
 
-      Row({ space: 24 }) {
-        Text(this.resText($r('app.string.home_asset_debt')) + ' ' + this.moneyText(this.summary.totalDebt))
+      // 两行明细：欠款 / 净资产（等宽数字，标签与数值同色系）
+      Row({ space: 8 }) {
+        Text(this.resText($r('app.string.home_asset_debt')))
           .fontSize($r('app.float.font_aux'))
-          .fontColor('#B3B9FF')
+          .fontColor(palette(this.isDark).textOnGradientSecondary)
+        Text(this.moneyText(this.summary.totalDebt))
+          .fontSize($r('app.float.font_aux'))
+          .fontColor(palette(this.isDark).textOnGradient)
           .fontFeature('"tnum" on')
-        Text(this.resText($r('app.string.home_asset_net')) + ' ' + this.moneyText(this.summary.netAsset))
+      }
+      .width('100%')
+
+      Row({ space: 8 }) {
+        Text(this.resText($r('app.string.home_asset_net')))
           .fontSize($r('app.float.font_aux'))
-          .fontColor('#B3B9FF')
+          .fontColor(palette(this.isDark).textOnGradientSecondary)
+        Text(this.moneyText(this.summary.netAsset))
+          .fontSize($r('app.float.font_aux'))
+          .fontColor(palette(this.isDark).textOnGradient)
           .fontFeature('"tnum" on')
       }
       .width('100%')
     }
     .alignItems(HorizontalAlign.Start)
     .width('100%')
-    .padding($r('app.float.card_padding'))
+    .padding(18)
     .borderRadius($r('app.float.radius_card'))
     .linearGradient({
       angle: 135,
       colors: [[palette(this.isDark).gradStart, 0], [palette(this.isDark).gradEnd, 1]]
     })
+    .shadow(cardShadow(this.isDark))
   }
 }

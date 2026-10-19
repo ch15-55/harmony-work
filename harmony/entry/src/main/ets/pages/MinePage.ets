@@ -8,7 +8,7 @@
  */
 import { router } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
-import { palette } from '../constants/ThemeConstants';
+import { palette, cardShadow, cardBorderWidth } from '../constants/ThemeConstants';
 import { AppStorageKeys, ThemeMode } from '../constants/AppConstants';
 import { RouteConstants } from '../constants/RouteConstants';
 import { MineSummary, MineViewModel } from '../viewmodel/MineViewModel';
@@ -180,6 +180,9 @@ export struct MinePage {
     .width('100%')
     .borderRadius($r('app.float.radius_card'))
     .backgroundColor(palette(this.isDark).bgCard)
+    .borderWidth(cardBorderWidth(this.isDark))
+    .borderColor(palette(this.isDark).border)
+    .shadow(cardShadow(this.isDark))
     .clip(true)
   }
 
@@ -218,6 +221,9 @@ export struct MinePage {
     .width('100%')
     .borderRadius($r('app.float.radius_card'))
     .backgroundColor(palette(this.isDark).bgCard)
+    .borderWidth(cardBorderWidth(this.isDark))
+    .borderColor(palette(this.isDark).border)
+    .shadow(cardShadow(this.isDark))
     .clip(true)
   }
 
@@ -247,6 +253,9 @@ export struct MinePage {
     .width('100%')
     .borderRadius($r('app.float.radius_card'))
     .backgroundColor(palette(this.isDark).bgCard)
+    .borderWidth(cardBorderWidth(this.isDark))
+    .borderColor(palette(this.isDark).border)
+    .shadow(cardShadow(this.isDark))
     .clip(true)
   }
 
@@ -285,6 +294,9 @@ export struct MinePage {
     .width('100%')
     .borderRadius($r('app.float.radius_card'))
     .backgroundColor(palette(this.isDark).bgCard)
+    .borderWidth(cardBorderWidth(this.isDark))
+    .borderColor(palette(this.isDark).border)
+    .shadow(cardShadow(this.isDark))
     .clip(true)
   }
 

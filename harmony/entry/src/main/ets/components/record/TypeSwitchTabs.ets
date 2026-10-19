@@ -60,6 +60,8 @@ export struct TypeSwitchTabs {
           .backgroundColor(txType === this.selected
             ? this.accentColor(txType)
             : palette(this.isDark).bgElevated)
+          // 切换时填充色/字重平滑过渡（180ms EaseOut）
+          .animation({ duration: 180, curve: Curve.EaseOut })
           .onClick(() => {
             if (this.onTypeChange !== undefined && txType !== this.selected) {
               this.onTypeChange(txType);
