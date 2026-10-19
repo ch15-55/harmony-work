@@ -27,16 +27,22 @@
 .
 ├── README.md                 # 仓库状态、复核和 Git 上传方法
 ├── AGENTS.md                 # 人和 AI 共同遵守的仓库规则
+├── CHANGELOG.md              # 版本变更与验证记录
+├── TESTING.md                # 两套测试（Python / ArkTS）的运行与限制
+├── .github/
+│   └── workflows/build.yml   # CI：无需 SDK 的校验 + 自托管 Runner 的完整构建门禁
 ├── harmony/                  # 用户补充的原始 DevEco 工程
 ├── docs/
 │   ├── ASSESSMENT.md         # 现有功能实测、问题复现和评价
 │   ├── SOURCE_REVIEW.md      # 原始源码、编译验证及问题定位
 │   ├── FIXES.md              # F01–F05 修复、构建与验证记录
+│   ├── RUBRIC.md             # 团队标尺七维度评分卡（v1.1 → v1.2）
 │   ├── review/               # 实测结果、SQL 检查结果和截图
 │   ├── SOURCE_GATE.md        # 源码门禁：缺件清单与修复落点
 │   └── SOURCE_RECOVERY.md    # 找回源码及接入工程的方法
 ├── tools/
 │   ├── build_ascii.ps1       # 中文路径下的一键构建（复制到英文临时目录）
+│   ├── test_ascii.ps1        # 中文路径下的 ArkTS 单测（复制到英文临时目录 + hvigor test）
 │   ├── unpack_app.py         # 可重复拆包、SHA-256 清单、只读校验
 │   ├── audit_existing_package.py # 原包 SQL 的合成数据复核
 │   └── test_unpack_app.py    # 路径安全、覆盖保护和复核测试
@@ -57,6 +63,30 @@ powershell -ExecutionPolicy Bypass -File tools\build_ascii.ps1
 ```
 
 需要 DevEco Studio 自带 SDK 与 `hvigorw`；脚本默认查找 `E:\DevEco Studio`，可用 `-DevEcoHome` 指定。签名使用本机 `harmony/build-profile.json5`，仓库内只有模板。
+
+## 运行测试
+
+两套测试覆盖的边界不同，详见 `TESTING.md`。
+
+**ArkTS 本地单测（需 DevEco Studio + HarmonyOS SDK）**：覆盖 F03/F04/F05 纯逻辑、金额/日期铁律、
+服务层 DI 注入，共 26 例，已在本机经 `hvigorw test` 实际编译运行并全绿
+（`test_result.txt` 显示 `Tests run: 26, Failure: 0, Error: 0`）：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\test_ascii.ps1
+```
+
+Hvigor 拒绝中文工程路径（`00306003`），该脚本会自动把 `harmony/` 复制到 ASCII 临时目录再构建。
+
+**Python 工具单测（无需 SDK）**：
+
+```powershell
+python -m unittest discover -s tools -p "test_*.py"
+```
+
+CI（`.github/workflows/build.yml`）的 `validate` job 在 GitHub 托管 Runner 上跑绿上述 Python 校验
+与结构检查；ArkTS 完整构建与单测为 `harmony-build` job，仅在自托管 Runner 且配置了
+`DEVECO_SDK_HOME` 时触发（GitHub 托管 Runner 不预装 HarmonyOS SDK）。
 
 ## 复核拆包结果
 
@@ -83,18 +113,19 @@ python tools/audit_existing_package.py --disassembly local-data/review/modules.p
 
 ## 上传 Git
 
-本目录已初始化本地 Git，尚未提交或绑定远程。先阅读 [仓库规则](AGENTS.md)，然后执行：
+本目录已初始化本地 Git 并绑定远程 `https://github.com/ch15-55/harmony-work.git`（已推送）。
+提交前先阅读 [仓库规则](AGENTS.md)，按 `类型: 内容` 写提交信息，并确认本地单测与 Python 校验均通过：
 
 ```powershell
 git status --short
-git add README.md AGENTS.md .gitignore .gitattributes docs tools recovered harmony
+git add -A
 git diff --cached --stat
-git commit -m "docs: 整理轻账本发布包资料与开发规范"
-# 将下面地址中的 OWNER 和 REPOSITORY 替换为自己的仓库。
-git remote add origin https://github.com/OWNER/REPOSITORY.git
-git push -u origin main
+git commit -m "test: 新增 26 例 ArkTS 本地单测与 DI 接缝"
+git push
 ```
 
-不要使用 `git add -f` 上传被排除的发布包、字节码或签名文件。以后需要分发安装包时，使用独立的发布附件。Git 的忽略规则只影响未跟踪文件，不能移除已经提交的文件，参见 [Git 官方说明](https://git-scm.com/docs/gitignore)。
+不要使用 `git add -f` 上传被排除的发布包、字节码或签名文件（`harmony/build-profile.json5`
+已被 `.gitignore` 排除，仅 `build-profile.example.json5` 入库）。Git 的忽略规则只影响未跟踪文件，
+不能移除已经提交的文件，参见 [Git 官方说明](https://git-scm.com/docs/gitignore)。
 
 当前没有指定开源许可证；原包中的作者署名、协议和权属声明按原样保留。
