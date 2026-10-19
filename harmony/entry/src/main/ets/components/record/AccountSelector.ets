@@ -1,20 +1,19 @@
 /**
  * 模块职责：账户选择器（架构 T04 record/AccountSelector）。
- * 触发行展示当前选中账户（图标+名称+余额），点击经 bindSheet 弹出底部
+ * 触发行展示当前选中账户（名称+余额），点击经 bindSheet 弹出底部
  * 账户列表；选中即回调并收起。余额由页面传入（AccountService 实时计算，
  * 本组件不做任何金额算术，展示统一走 MoneyUtil）。
  * 空账户列表时 sheet 内渲染 record_no_account 提示（全站空态要求）。
  */
 import { palette } from '../../constants/ThemeConstants';
 import { AppStorageKeys } from '../../constants/AppConstants';
-import { IconConstants } from '../../constants/IconConstants';
 import { MoneyUtil } from '../../utils/MoneyUtil';
 
 /** 账户选择项（页面/ViewModel 组装，组件不触达数据层） */
 export class AccountOption {
   public id: number = 0;
   public name: string = '';
-  public icon: string = IconConstants.DEFAULT_ICON_KEY;
+  public icon: string = '';
   public color: string = '#5B67F5';
   /** 实时余额（分） */
   public balance: number = 0;
@@ -57,9 +56,6 @@ export struct AccountSelector {
           .layoutWeight(1)
       } else {
         Row({ space: 8 }) {
-          Text(IconConstants.iconGlyph(this.currentOption()!.icon))
-            .fontSize(18)
-
           Text(this.currentOption()!.name)
             .fontSize($r('app.float.font_body'))
             .fontColor(palette(this.isDark).textPrimary)
@@ -118,9 +114,6 @@ export struct AccountSelector {
           ForEach(this.options, (option: AccountOption) => {
             ListItem() {
               Row({ space: 12 }) {
-                Text(IconConstants.iconGlyph(option.icon))
-                  .fontSize(20)
-
                 Text(option.name)
                   .fontSize($r('app.float.font_body'))
                   .fontColor(palette(this.isDark).textPrimary)
