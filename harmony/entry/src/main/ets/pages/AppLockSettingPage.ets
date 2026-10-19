@@ -21,6 +21,14 @@ import { LogUtil } from '../utils/LogUtil';
 @Entry
 @Component
 struct AppLockSettingPage {
+  /** 页面转场：二级页统一右侧滑入（v1.2 美化） */
+  pageTransition() {
+    PageTransitionEnter({ type: RouteType.Push, duration: 300, curve: Curve.EaseOut })
+      .slide(SlideEffect.Right)
+    PageTransitionExit({ type: RouteType.Pop, duration: 280, curve: Curve.EaseIn })
+      .slide(SlideEffect.Right)
+  }
+
   @StorageLink(AppStorageKeys.IS_DARK) isDark: boolean = false;
   @State private lockEnabled: boolean = AppLockService.isEnabled();
   @State private showSetPin: boolean = false;

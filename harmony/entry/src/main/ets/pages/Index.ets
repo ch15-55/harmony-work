@@ -24,6 +24,14 @@ import { LogUtil } from '../utils/LogUtil';
 @Entry
 @Component
 struct Index {
+  /** 页面转场：被二级页覆盖时轻微视差左移（v1.2 美化，呼应二级页右滑入） */
+  pageTransition() {
+    PageTransitionExit({ type: RouteType.Push, duration: 300, curve: Curve.EaseOut })
+      .translate({ x: '-10%' })
+    PageTransitionEnter({ type: RouteType.Pop, duration: 280, curve: Curve.EaseIn })
+      .translate({ x: '0%' })
+  }
+
   private static readonly TAG: string = 'Index';
   @StorageLink(AppStorageKeys.IS_DARK) isDark: boolean = false;
   /** 应用锁锁定态（EntryAbility 冷启动/超时写入） */
@@ -186,6 +194,7 @@ struct Index {
         .tabBar(this.tabBuilder(4))
       }
       .scrollable(false)
+      .animationDuration(260)
       .barHeight(56)
       .width('100%')
       .height('100%')

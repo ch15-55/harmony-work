@@ -19,6 +19,14 @@ import { LogUtil } from '../utils/LogUtil';
 @Entry
 @Component
 struct BackupPage {
+  /** 页面转场：二级页统一右侧滑入（v1.2 美化） */
+  pageTransition() {
+    PageTransitionEnter({ type: RouteType.Push, duration: 300, curve: Curve.EaseOut })
+      .slide(SlideEffect.Right)
+    PageTransitionExit({ type: RouteType.Pop, duration: 280, curve: Curve.EaseIn })
+      .slide(SlideEffect.Right)
+  }
+
   private static readonly TAG: string = 'BackupPage';
   @StorageLink(AppStorageKeys.IS_DARK) isDark: boolean = false;
   /** 防重复点击（备份/恢复共用） */

@@ -26,6 +26,14 @@ import { LogUtil } from '../utils/LogUtil';
 @Entry
 @Component
 struct PrivacyPage {
+  /** 页面转场：二级页统一右侧滑入（v1.2 美化） */
+  pageTransition() {
+    PageTransitionEnter({ type: RouteType.Push, duration: 300, curve: Curve.EaseOut })
+      .slide(SlideEffect.Right)
+    PageTransitionExit({ type: RouteType.Pop, duration: 280, curve: Curve.EaseIn })
+      .slide(SlideEffect.Right)
+  }
+
   private static readonly TAG: string = 'PrivacyPage';
   @StorageLink(AppStorageKeys.IS_DARK) isDark: boolean = false;
   /** 同意处理中标记：防止重复点击造成数据库重复初始化 */
