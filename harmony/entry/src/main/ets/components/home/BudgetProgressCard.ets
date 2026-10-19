@@ -9,6 +9,7 @@ import { palette } from '../../constants/ThemeConstants';
 import { AppConstants, AppStorageKeys, BudgetLevel } from '../../constants/AppConstants';
 import { BudgetProgress, CategorySlice } from '../../model/StatsModels';
 import { MoneyUtil } from '../../utils/MoneyUtil';
+import { BudgetTextUtil } from '../../utils/BudgetTextUtil';
 import { DonutChart } from '../chart/DonutChart';
 
 /** 进度环最小可见弧长占比（仅影响图形，不参与百分比文字计算） */
@@ -58,25 +59,16 @@ export struct BudgetProgressCard {
   }
 
   /**
-   * 已用占比文案：按真实比例展示，不再向上取整。
-   * - 低于 1% 显示「<1%」，避免 0.01% 被写成 1%
+   * 已用占比文案：委托 BudgetTextUtil（纯函数，逻辑见该文件）。
+   * - 低于 1% 显示「<1%」，避免 0.01% 被写成 1%（F03）
    * - 1% ~ 100% 保留一位小数，整数时不显示 .0
    * - 超支保持整数，便于一眼看出超出幅度
    */
   private usedPercentText(): string {
-    if (this.progress === null || this.progress.total <= 0 || this.progress.used <= 0) {
+    if (this.progress === null) {
       return '0%';
     }
-    const percent: number = this.progress.used / this.progress.total * 100;
-    if (percent < 1) {
-      return '<1%';
-    }
-    if (percent < 100) {
-      const fixed: string = percent.toFixed(1);
-      const trimmed: string = fixed.endsWith('.0') ? fixed.substring(0, fixed.length - 2) : fixed;
-      return trimmed + '%';
-    }
-    return Math.round(percent).toString() + '%';
+    return BudgetTextUtil.percentText(this.progress.used, this.progress.total);
   }
 
   build() {

@@ -10,6 +10,7 @@
 import { BusinessError } from '@kit.BasicServicesKit';
 import { AppConstants, AppStorageKeys } from '../constants/AppConstants';
 import { CryptoUtil } from '../utils/CryptoUtil';
+import { AppLockLogic, LockState } from '../utils/AppLockLogic';
 import { SettingsService } from './SettingsService';
 import { LogUtil } from '../utils/LogUtil';
 import { ErrorMessages } from '../constants/ErrorMessages';
@@ -76,8 +77,10 @@ export class AppLockService {
    * 等待期内直接拒绝，不做任何派生；校验成功清零失败计数与等待状态。
    */
   public static async verifyPin(pin: string): Promise<boolean> {
-    AppLockService.normalizeExpiredLockout();
-    if (AppLockService.getLockoutRemainMs() > 0) {
+    const nowMs: number = Date.now();
+    const normalized: LockState = AppLockLogic.normalizeExpired(AppLockService.readState(), nowMs);
+    AppLockService.writeStateIfChanged(normalized);
+    if (AppLockLogic.isLocked(normalized, nowMs)) {
       return false;
     }
     if (!SettingsService.hasPin()) {
@@ -88,21 +91,21 @@ export class AppLockService {
       try {
         const hash: string = await CryptoUtil.derivePin(pin, credential.salt, credential.iterations);
         if (hash === credential.hash) {
-          SettingsService.resetPinAttempts();
+          AppLockService.writeState(AppLockLogic.resetOnSuccess());
           return true;
         }
-        AppLockService.registerFailure();
+        AppLockService.writeState(AppLockLogic.registerFailure(normalized, nowMs));
         return false;
       } catch (e) {
         LogUtil.fail(AppLockService.TAG, 'verify_pin_v2', e as BusinessError);
         return false;
       }
     }
-    return await AppLockService.verifyLegacyPin(pin);
+    return await AppLockService.verifyLegacyPin(pin, normalized, nowMs);
   }
 
   /** 旧格式校验 + 成功即迁移；迁移失败不影响本次解锁结果 */
-  private static async verifyLegacyPin(pin: string): Promise<boolean> {
+  private static async verifyLegacyPin(pin: string, current: LockState, nowMs: number): Promise<boolean> {
     const salt: string = SettingsService.getPinSalt();
     const stored: string = SettingsService.getPinHash();
     if (salt.length === 0 || stored.length === 0) {
@@ -117,7 +120,7 @@ export class AppLockService {
       return false;
     }
     if (!matched) {
-      AppLockService.registerFailure();
+      AppLockService.writeState(AppLockLogic.registerFailure(current, nowMs));
       return false;
     }
     // 迁移：沿用原盐重新派生，单键写入后清除旧哈希；任一失败都保留旧凭据可继续校验
@@ -131,7 +134,7 @@ export class AppLockService {
     } catch (e) {
       LogUtil.fail(AppLockService.TAG, 'migrate_pin', e as BusinessError);
     }
-    SettingsService.resetPinAttempts();
+    AppLockService.writeState(AppLockLogic.resetOnSuccess());
     return true;
   }
 
@@ -166,17 +169,12 @@ export class AppLockService {
    * 读取时顺带处理已到期的等待，避免过期状态残留。
    */
   public static getLockoutRemainMs(): number {
-    const until: number = SettingsService.getPinLockUntil();
-    if (until <= 0) {
-      return 0;
-    }
-    const remain: number = until - Date.now();
-    return remain > 0 ? remain : 0;
+    return AppLockLogic.remainingMs(AppLockService.readState(), Date.now());
   }
 
   /** 是否处于等待期 */
   public static isLockoutActive(): boolean {
-    return AppLockService.getLockoutRemainMs() > 0;
+    return AppLockLogic.isLocked(AppLockService.readState(), Date.now());
   }
 
   /** 已累计的连续失败次数（仅用于提示与测试，不涉及凭据） */
@@ -184,21 +182,22 @@ export class AppLockService {
     return SettingsService.getPinFailCount();
   }
 
-  /** 记录一次失败：达到上限即写入等待截止时间（持久化，跨重启生效） */
-  private static registerFailure(): void {
-    const next: number = SettingsService.getPinFailCount() + 1;
-    SettingsService.setPinFailCount(next);
-    if (next >= AppConstants.PIN_MAX_FAILURES) {
-      SettingsService.setPinLockUntil(Date.now() + AppConstants.PIN_LOCKOUT_MS);
-    }
+  /** 从持久化读取锁屏状态（纯数据组装，便于单测复用） */
+  private static readState(): LockState {
+    return { failCount: SettingsService.getPinFailCount(), lockUntilMs: SettingsService.getPinLockUntil() };
   }
 
-  /** 等待期已过：清除截止时间并重新累计失败次数 */
-  private static normalizeExpiredLockout(): void {
-    const until: number = SettingsService.getPinLockUntil();
-    if (until > 0 && until <= Date.now()) {
-      SettingsService.setPinLockUntil(0);
-      SettingsService.setPinFailCount(0);
+  /** 写入锁屏状态（仅失败计数与等待截止，不涉及凭据） */
+  private static writeState(state: LockState): void {
+    SettingsService.setPinFailCount(state.failCount);
+    SettingsService.setPinLockUntil(state.lockUntilMs);
+  }
+
+  /** 仅当状态变化时才写回，避免无谓的 Preferences 写入 */
+  private static writeStateIfChanged(state: LockState): void {
+    const current: LockState = AppLockService.readState();
+    if (current.failCount !== state.failCount || current.lockUntilMs !== state.lockUntilMs) {
+      AppLockService.writeState(state);
     }
   }
 
